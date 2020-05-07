@@ -40,9 +40,9 @@ Collection of Jittor models of Generative Adversarial Network varieties presente
     + [Wasserstein GAN DIV](#wasserstein-gan-div)
 
 ## Installation
-    $ git clone https://github.com/eriklindernoren/PyTorch-GAN
-    $ cd PyTorch-GAN/
-    $ sudo pip3 install -r requirements.txt
+    $ git clone https://github.com/Jittor/gan-jittor.git
+    $ cd gan-jittor/
+    $ sudo python3.7.7 -m pip install -r requirements.txt
 
 ## models   
 ### Auxiliary Classifier GAN
@@ -59,7 +59,7 @@ Synthesizing high resolution photorealistic images has been a long-standing chal
 #### Run Example
 ```
 $ cd models/acgan/
-$ python3 acgan.py
+$ python3.7 acgan.py
 ```
 
 <p align="center">
@@ -80,8 +80,12 @@ n this paper, we propose the "adversarial autoencoder" (AAE), which is a probabi
 #### Run Example
 ```
 $ cd models/aae/
-$ python3 aae.py
+$ python3.7 aae.py
 ```
+
+<p align="center">
+    <img src="assets/aae.gif" width="360"\>
+</p>
 
 ### BEGAN
 _BEGAN: Boundary Equilibrium Generative Adversarial Networks_
@@ -97,7 +101,7 @@ We propose a new equilibrium enforcing method paired with a loss derived from th
 #### Run Example
 ```
 $ cd models/began/
-$ python3 began.py
+$ python3.7 began.py
 ```
 
 ### BicycleGAN
@@ -120,7 +124,7 @@ Many image-to-image translation problems are ambiguous, as a single input image 
 $ cd data/
 $ bash download_pix2pix_dataset.sh edges2shoes
 $ cd ../models/bicyclegan/
-$ python3 bicyclegan.py
+$ python3.7 bicyclegan.py
 ```
 
 <p align="center">
@@ -145,7 +149,7 @@ Generative adversarial networks (GANs) are a learning framework that rely on tra
 #### Run Example
 ```
 $ cd models/bgan/
-$ python3 bgan.py
+$ python3.7 bgan.py
 ```
 
 ### Cluster GAN
@@ -173,7 +177,7 @@ Code based on a full PyTorch [[implementation]](https://github.com/zhampel/clust
 #### Run Example
 ```
 $ cd models/cluster_gan/
-$ python3 clustergan.py
+$ python3.7 clustergan.py
 ```
 
 <p align="center">
@@ -195,7 +199,7 @@ Generative Adversarial Nets [8] were recently introduced as a novel way to train
 #### Run Example
 ```
 $ cd models/cgan/
-$ python3 cgan.py
+$ python3.7 cgan.py
 ```
 
 <p align="center">
@@ -216,7 +220,7 @@ We introduce a simple semi-supervised learning approach for images based on in-p
 #### Run Example
 ```
 $ cd models/ccgan/
-$ python3 ccgan.py
+$ python3.7 ccgan.py
 ```
 
 ### Context Encoder
@@ -234,7 +238,7 @@ We present an unsupervised visual feature learning algorithm driven by context-b
 ```
 $ cd models/context_encoder/
 <follow steps at the top of context_encoder.py>
-$ python3 context_encoder.py
+$ python3.7 context_encoder.py
 ```
 
 <p align="center">
@@ -258,7 +262,7 @@ We propose coupled generative adversarial network (CoGAN) for learning a joint d
 #### Run Example
 ```
 $ cd models/cogan/
-$ python3 cogan.py
+$ python3.7 cogan.py
 ```
 
 <p align="center">
@@ -288,7 +292,7 @@ Image-to-image translation is a class of vision and graphics problems where the 
 $ cd data/
 $ bash download_cyclegan_dataset.sh monet2photo
 $ cd ../models/cyclegan/
-$ python3 cyclegan.py --dataset_name monet2photo
+$ python3.7 cyclegan.py --dataset_name monet2photo
 ```
 
 <p align="center">
@@ -312,7 +316,7 @@ In recent years, supervised learning with convolutional networks (CNNs) has seen
 #### Run Example
 ```
 $ cd models/dcgan/
-$ python3 dcgan.py
+$ python3.7 dcgan.py
 ```
 
 <p align="center">
@@ -339,7 +343,7 @@ While humans easily recognize relations between data from different domains with
 $ cd data/
 $ bash download_pix2pix_dataset.sh edges2shoes
 $ cd ../models/discogan/
-$ python3 discogan.py --dataset_name edges2shoes
+$ python3.7 discogan.py --dataset_name edges2shoes
 ```
 
 <p align="center">
@@ -365,7 +369,7 @@ We propose studying GAN training dynamics as regret minimization, which is in co
 #### Run Example
 ```
 $ cd models/dragan/
-$ python3 dragan.py
+$ python3.7 dragan.py
 ```
 
 ### DualGAN
@@ -385,7 +389,7 @@ Conditional Generative Adversarial Networks (GANs) for cross-domain image-to-ima
 $ cd data/
 $ bash download_pix2pix_dataset.sh facades
 $ cd ../models/dualgan/
-$ python3 dualgan.py --dataset_name facades
+$ python3.7 dualgan.py --dataset_name facades
 ```
 
 ### Energy-Based GAN
@@ -402,7 +406,7 @@ We introduce the "Energy-based Generative Adversarial Network" model (EBGAN) whi
 #### Run Example
 ```
 $ cd models/ebgan/
-$ python3 ebgan.py
+$ python3.7 ebgan.py
 ```
 
 ### Enhanced Super-Resolution GAN
@@ -421,7 +425,7 @@ The Super-Resolution Generative Adversarial Network (SRGAN) is a seminal work th
 ```
 $ cd models/esrgan/
 <follow steps at the top of esrgan.py>
-$ python3 esrgan.py
+$ python3.7 esrgan.py
 ```
 
 <p align="center">
@@ -445,7 +449,7 @@ We propose a new framework for estimating generative models via an adversarial p
 #### Run Example
 ```
 $ cd models/gan/
-$ python3 gan.py
+$ python3.7 gan.py
 ```
 
 <p align="center">
@@ -466,7 +470,7 @@ This paper describes InfoGAN, an information-theoretic extension to the Generati
 #### Run Example
 ```
 $ cd models/infogan/
-$ python3 infogan.py
+$ python3.7 infogan.py
 ```
 
 <p align="center">
@@ -497,7 +501,7 @@ Unsupervised learning with generative adversarial networks (GANs) has proven hug
 #### Run Example
 ```
 $ cd models/lsgan/
-$ python3 lsgan.py
+$ python3.7 lsgan.py
 ```
 
 
@@ -517,7 +521,7 @@ Unsupervised image-to-image translation is an important and challenging problem 
 $ cd data/
 $ bash download_pix2pix_dataset.sh edges2shoes
 $ cd ../models/munit/
-$ python3 munit.py --dataset_name edges2shoes
+$ python3.7 munit.py --dataset_name edges2shoes
 ```
 
 <p align="center">
@@ -547,7 +551,7 @@ We investigate conditional adversarial networks as a general-purpose solution to
 $ cd data/
 $ bash download_pix2pix_dataset.sh facades
 $ cd ../models/pix2pix/
-$ python3 pix2pix.py --dataset_name facades
+$ python3.7 pix2pix.py --dataset_name facades
 ```
 
 <p align="center">
@@ -574,7 +578,7 @@ Trains a classifier on images that have been translated from the source domain (
 
 ```
 $ cd models/pixelda/
-$ python3 pixelda.py
+$ python3.7 pixelda.py
 ```  
 | Method       | Accuracy  |
 | ------------ |:---------:|
@@ -606,8 +610,8 @@ Empirically, we observe that 1) RGANs and RaGANs are significantly more stable a
 #### Run Example
 ```
 $ cd models/relativistic_gan/
-$ python3 relativistic_gan.py                 # Relativistic Standard GAN
-$ python3 relativistic_gan.py --rel_avg_gan   # Relativistic Average GAN
+$ python3.7 relativistic_gan.py                 # Relativistic Standard GAN
+$ python3.7 relativistic_gan.py --rel_avg_gan   # Relativistic Average GAN
 ```
 
 ### Semi-Supervised GAN
@@ -624,7 +628,7 @@ We extend Generative Adversarial Networks (GANs) to the semi-supervised context 
 #### Run Example
 ```
 $ cd models/sgan/
-$ python3 sgan.py
+$ python3.7 sgan.py
 ```
 
 ### Softmax GAN
@@ -641,7 +645,7 @@ Softmax GAN is a novel variant of Generative Adversarial Network (GAN). The key 
 #### Run Example
 ```
 $ cd models/softmax_gan/
-$ python3 softmax_gan.py
+$ python3.7 softmax_gan.py
 ```
 
 ### StarGAN
@@ -659,7 +663,7 @@ Recent studies have shown remarkable success in image-to-image translation for t
 ```
 $ cd models/stargan/
 <follow steps at the top of stargan.py>
-$ python3 stargan.py
+$ python3.7 stargan.py
 ```
 
 <p align="center">
@@ -688,7 +692,7 @@ Despite the breakthroughs in accuracy and speed of single image super-resolution
 ```
 $ cd models/srgan/
 <follow steps at the top of srgan.py>
-$ python3 srgan.py
+$ python3.7 srgan.py
 ```
 
 <p align="center">
@@ -714,7 +718,7 @@ Unsupervised image-to-image translation aims at learning a joint distribution of
 $ cd data/
 $ bash download_cyclegan_dataset.sh apple2orange
 $ cd models/unit/
-$ python3 unit.py --dataset_name apple2orange
+$ python3.7 unit.py --dataset_name apple2orange
 ```
 
 ### Wasserstein GAN
@@ -731,7 +735,7 @@ We introduce a new algorithm named WGAN, an alternative to traditional GAN train
 #### Run Example
 ```
 $ cd models/wgan/
-$ python3 wgan.py
+$ python3.7 wgan.py
 ```
 
 ### Wasserstein GAN GP
@@ -748,7 +752,7 @@ Generative Adversarial Networks (GANs) are powerful generative models, but suffe
 #### Run Example
 ```
 $ cd models/wgan_gp/
-$ python3 wgan_gp.py
+$ python3.7 wgan_gp.py
 ```
 
 <p align="center">
@@ -770,7 +774,7 @@ ily of Wasserstein GANs (WGANs) is considered to be state-of-the-art due to the 
 #### Run Example
 ```
 $ cd models/wgan_div/
-$ python3 wgan_div.py
+$ python3.7 wgan_div.py
 ```
 
 <p align="center">
