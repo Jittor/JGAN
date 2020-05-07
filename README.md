@@ -63,10 +63,10 @@ $ python3.7 acgan.py
 ```
 
 <p align="center">
-    <img src="assets/acgan.gif" width="360"\>
+    <img src="assets/acgan.gif" width="200"\>
 </p>
 
-### Adversarial Autoencoder
+### Adversarial Autoencoder [zwy]
 _Adversarial Autoencoder_
 
 #### Authors
@@ -84,10 +84,10 @@ $ python3.7 aae.py
 ```
 
 <p align="center">
-    <img src="assets/aae.gif" width="360"\>
+    <img src="assets/aae.gif" width="200"\>
 </p>
 
-### BEGAN
+### BEGAN [zwy]
 _BEGAN: Boundary Equilibrium Generative Adversarial Networks_
 
 #### Authors
@@ -105,10 +105,10 @@ $ python3.7 began.py
 ```
 
 <p align="center">
-    <img src="assets/began.gif" width="360"\>
+    <img src="assets/began.gif" width="200"\>
 </p>
 
-### BicycleGAN
+### BicycleGAN [zwy]
 _Toward Multimodal Image-to-Image Translation_
 
 #### Authors
@@ -123,6 +123,10 @@ Many image-to-image translation problems are ambiguous, as a single input image 
     <img src="assets/bicyclegan_architecture.jpg" width="800"\>
 </p>
 
+<p align="center">
+    <img src="assets/bicyclegan.jpg" width="800"\>
+</p>
+
 #### Run Example
 ```
 $ cd data/
@@ -132,7 +136,7 @@ $ python3.7 bicyclegan.py
 ```
 
 <p align="center">
-    <img src="assets/bicyclegan.png" width="480"\>
+    <img src="assets/bicyclegan.png" width="200"\>
 </p>
 <p align="center">
     Various style translations by varying the latent code.
@@ -185,11 +189,11 @@ $ python3.7 clustergan.py
 ```
 
 <p align="center">
-    <img src="assets/cluster_gan.gif" width="360"\>
+    <img src="assets/cluster_gan.gif" width="200"\>
 </p>
 
 
-### Conditional GAN
+### Conditional GAN [zwy]
 _Conditional Generative Adversarial Nets_
 
 #### Authors
@@ -207,7 +211,7 @@ $ python3.7 cgan.py
 ```
 
 <p align="center">
-    <img src="assets/cgan.gif" width="360"\>
+    <img src="assets/cgan.gif" width="200"\>
 </p>
 
 ### Context-Conditional GAN
@@ -252,7 +256,7 @@ $ python3.7 context_encoder.py
     Rows: Masked | Inpainted | Original | Masked | Inpainted | Original
 </p>
 
-### Coupled GAN
+### Coupled GAN [zwy]
 _Coupled Generative Adversarial Networks_
 
 #### Authors
@@ -270,13 +274,13 @@ $ python3.7 cogan.py
 ```
 
 <p align="center">
-    <img src="assets/cogan.gif" width="360"\>
+    <img src="assets/cogan.gif" width="200"\>
 </p>
 <p align="center">
     Generated MNIST and MNIST-M images
 </p>
 
-### CycleGAN
+### CycleGAN [zwy]
 _Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks_
 
 #### Authors
@@ -327,7 +331,7 @@ $ python3.7 dcgan.py
     <img src="assets/dcgan.gif" width="240"\>
 </p>
 
-### DiscoGAN
+### DiscoGAN [zwy]
 _Learning to Discover Cross-Domain Relations with Generative Adversarial Networks_
 
 #### Authors
@@ -351,7 +355,7 @@ $ python3.7 discogan.py --dataset_name edges2shoes
 ```
 
 <p align="center">
-    <img src="assets/discogan.png" width="480"\>
+    <img src="assets/discogan.gif" width="200"\>
 </p>
 <p align="center">
     Rows from top to bottom: (1) Real image from domain A (2) Translated image from <br>
@@ -376,7 +380,7 @@ $ cd models/dragan/
 $ python3.7 dragan.py
 ```
 
-### DualGAN
+### DualGAN [zwy]
 _DualGAN: Unsupervised Dual Learning for Image-to-Image Translation_
 
 #### Authors
@@ -396,6 +400,10 @@ $ cd ../models/dualgan/
 $ python3.7 dualgan.py --dataset_name facades
 ```
 
+<p align="center">
+    <img src="assets/dualgan.gif" width="240"\>
+</p>
+
 ### Energy-Based GAN
 _Energy-based Generative Adversarial Network_
 
@@ -413,7 +421,7 @@ $ cd models/ebgan/
 $ python3.7 ebgan.py
 ```
 
-### Enhanced Super-Resolution GAN
+### Enhanced Super-Resolution GAN [zwy]
 _ESRGAN: Enhanced Super-Resolution Generative Adversarial Networks_
 
 #### Authors
@@ -431,6 +439,10 @@ $ cd models/esrgan/
 <follow steps at the top of esrgan.py>
 $ python3.7 esrgan.py
 ```
+
+<p align="center">
+    <img src="assets/esrgan.gif" width="320"\>
+</p>
 
 <p align="center">
     <img src="assets/enhanced_superresgan.png" width="320"\>
@@ -478,14 +490,14 @@ $ python3.7 infogan.py
 ```
 
 <p align="center">
-    <img src="assets/infogan.gif" width="360"\>
+    <img src="assets/infogan.gif" width="200"\>
 </p>
 <p align="center">
     Result of varying categorical latent variable by column.
 </p>
 
 <p align="center">
-    <img src="assets/infogan.png" width="360"\>
+    <img src="assets/infogan.png" width="200"\>
 </p>
 <p align="center">
     Result of varying continuous latent variable by row.
@@ -529,7 +541,7 @@ $ python3.7 munit.py --dataset_name edges2shoes
 ```
 
 <p align="center">
-    <img src="assets/munit.png" width="480"\>
+    <img src="assets/munit.png" width="200"\>
 </p>
 <p align="center">
     Results by varying the style code.
@@ -559,14 +571,14 @@ $ python3.7 pix2pix.py --dataset_name facades
 ```
 
 <p align="center">
-    <img src="assets/pix2pix.png" width="480"\>
+    <img src="assets/pix2pix.png" width="200"\>
 </p>
 <p align="center">
     Rows from top to bottom: (1) The condition for the generator (2) Generated image <br>
     based of condition (3) The true corresponding image to the condition
 </p>
 
-### PixelDA
+### PixelDA [zwy]
 _Unsupervised Pixel-Level Domain Adaptation with Generative Adversarial Networks_
 
 #### Authors
@@ -590,7 +602,7 @@ $ python3.7 pixelda.py
 | PixelDA      | 95%       |
 
 <p align="center">
-    <img src="assets/pixelda.png" width="480"\>
+    <img src="assets/pixelda.gif" width="200"\>
 </p>
 <p align="center">
     Rows from top to bottom: (1) Real images from MNIST (2) Translated images from <br>
@@ -618,12 +630,12 @@ $ python3.7 relativistic_gan.py                 # Relativistic Standard GAN
 $ python3.7 relativistic_gan.py --rel_avg_gan   # Relativistic Average GAN
 ```
 
-### Semi-Supervised GAN
+### Semi-Supervised GAN [zwy]
 _Semi-Supervised Generative Adversarial Network_
 
 #### Authors
 Augustus Odena
-
+2
 #### Abstract
 We extend Generative Adversarial Networks (GANs) to the semi-supervised context by forcing the discriminator network to output class labels. We train a generative model G and a discriminator D on a dataset with inputs belonging to one of N classes. At training time, D is made to predict which of N+1 classes the input belongs to, where an extra class is added to correspond to the outputs of G. We show that this method can be used to create a more data-efficient classifier and that it allows for generating higher quality samples than a regular GAN.
 
@@ -634,6 +646,10 @@ We extend Generative Adversarial Networks (GANs) to the semi-supervised context 
 $ cd models/sgan/
 $ python3.7 sgan.py
 ```
+
+<p align="center">
+    <img src="assets/sgan.gif" width="200"\>
+</p>
 
 ### Softmax GAN
 _Softmax GAN_
@@ -686,7 +702,7 @@ Christian Ledig, Lucas Theis, Ferenc Huszar, Jose Caballero, Andrew Cunningham, 
 #### Abstract
 Despite the breakthroughs in accuracy and speed of single image super-resolution using faster and deeper convolutional neural networks, one central problem remains largely unsolved: how do we recover the finer texture details when we super-resolve at large upscaling factors? The behavior of optimization-based super-resolution methods is principally driven by the choice of the objective function. Recent work has largely focused on minimizing the mean squared reconstruction error. The resulting estimates have high peak signal-to-noise ratios, but they are often lacking high-frequency details and are perceptually unsatisfying in the sense that they fail to match the fidelity expected at the higher resolution. In this paper, we present SRGAN, a generative adversarial network (GAN) for image super-resolution (SR). To our knowledge, it is the first framework capable of inferring photo-realistic natural images for 4x upscaling factors. To achieve this, we propose a perceptual loss function which consists of an adversarial loss and a content loss. The adversarial loss pushes our solution to the natural image manifold using a discriminator network that is trained to differentiate between the super-resolved images and original photo-realistic images. In addition, we use a content loss motivated by perceptual similarity instead of similarity in pixel space. Our deep residual network is able to recover photo-realistic textures from heavily downsampled images on public benchmarks. An extensive mean-opinion-score (MOS) test shows hugely significant gains in perceptual quality using SRGAN. The MOS scores obtained with SRGAN are closer to those of the original high-resolution images than to those obtained with any state-of-the-art method.
 
-[[Paper]](https://arxiv.org/abs/1609.04802) [[Code]](models/srgan/srgan.py)
+[[Paper]](https://arxiv.org/abs/1609.02002) [[Code]](models/srgan/srgan.py)
 
 <p align="center">
     <img src="http://eriklindernoren.se/images/superresgan.png" width="640"\>
@@ -763,7 +779,7 @@ $ python3.7 wgan_gp.py
     <img src="assets/wgan_gp.gif" width="240"\>
 </p>
 
-### Wasserstein GAN DIV
+### Wasserstein GAN DIV [zwy]
 _Wasserstein Divergence for GANs_
 
 #### Authors
@@ -782,5 +798,5 @@ $ python3.7 wgan_div.py
 ```
 
 <p align="center">
-    <img src="assets/wgan_div.png" width="240"\>
+    <img src="assets/wgan_div.gif" width="240"\>
 </p>
