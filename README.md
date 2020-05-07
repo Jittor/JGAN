@@ -104,6 +104,10 @@ $ cd models/began/
 $ python3.7 began.py
 ```
 
+<p align="center">
+    <img src="assets/began.gif" width="360"\>
+</p>
+
 ### BicycleGAN
 _Toward Multimodal Image-to-Image Translation_
 
