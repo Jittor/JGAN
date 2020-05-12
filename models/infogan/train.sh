@@ -1,0 +1,1 @@
+log_v=1 CUDA_VISIBLE_DEVICES=0 PYTHONPATH=~/workspace/github/jittor/python/ python3.7 infogan.py

@@ -123,10 +123,6 @@ Many image-to-image translation problems are ambiguous, as a single input image 
     <img src="assets/bicyclegan_architecture.jpg" width="800"\>
 </p>
 
-<p align="center">
-    <img src="assets/bicyclegan.jpg" width="800"\>
-</p>
-
 #### Run Example
 ```
 $ cd data/
@@ -136,7 +132,7 @@ $ python3.7 bicyclegan.py
 ```
 
 <p align="center">
-    <img src="assets/bicyclegan.png" width="200"\>
+    <img src="assets/bicyclegan.gif" width="200"\>
 </p>
 <p align="center">
     Various style translations by varying the latent code.

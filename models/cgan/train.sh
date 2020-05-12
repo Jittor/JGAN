@@ -1,0 +1,1 @@
+use_mkl=0 PYTHONPATH=~/workspace/github/jittor/python/ python3.7 cgan.py

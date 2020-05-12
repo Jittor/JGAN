@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=3 PYTHONPATH=~/workspace/github/jittor/python/ python3.7 cyclegan.py
