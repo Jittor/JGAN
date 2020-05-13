@@ -66,14 +66,14 @@ $ python3.7 acgan.py
     <img src="assets/acgan.gif" width="200"\>
 </p>
 
-### Adversarial Autoencoder [zwy]
+### Adversarial Autoencoder
 _Adversarial Autoencoder_
 
 #### Authors
 Alireza Makhzani, Jonathon Shlens, Navdeep Jaitly, Ian Goodfellow, Brendan Frey
 
 #### Abstract
-n this paper, we propose the "adversarial autoencoder" (AAE), which is a probabilistic autoencoder that uses the recently proposed generative adversarial networks (GAN) to perform variational inference by matching the aggregated posterior of the hidden code vector of the autoencoder with an arbitrary prior distribution. Matching the aggregated posterior to the prior ensures that generating from any part of prior space results in meaningful samples. As a result, the decoder of the adversarial autoencoder learns a deep generative model that maps the imposed prior to the data distribution. We show how the adversarial autoencoder can be used in applications such as semi-supervised classification, disentangling style and content of images, unsupervised clustering, dimensionality reduction and data visualization. We performed experiments on MNIST, Street View House Numbers and Toronto Face datasets and show that adversarial autoencoders achieve competitive results in generative modeling and semi-supervised classification tasks.
+In this paper, we propose the "adversarial autoencoder" (AAE), which is a probabilistic autoencoder that uses the recently proposed generative adversarial networks (GAN) to perform variational inference by matching the aggregated posterior of the hidden code vector of the autoencoder with an arbitrary prior distribution. Matching the aggregated posterior to the prior ensures that generating from any part of prior space results in meaningful samples. As a result, the decoder of the adversarial autoencoder learns a deep generative model that maps the imposed prior to the data distribution. We show how the adversarial autoencoder can be used in applications such as semi-supervised classification, disentangling style and content of images, unsupervised clustering, dimensionality reduction and data visualization. We performed experiments on MNIST, Street View House Numbers and Toronto Face datasets and show that adversarial autoencoders achieve competitive results in generative modeling and semi-supervised classification tasks.
 
 [[Paper]](https://arxiv.org/abs/1511.05644) [[Code]](models/aae/aae.py)
 
@@ -87,7 +87,7 @@ $ python3.7 aae.py
     <img src="assets/aae.gif" width="200"\>
 </p>
 
-### BEGAN [zwy]
+### BEGAN
 _BEGAN: Boundary Equilibrium Generative Adversarial Networks_
 
 #### Authors
@@ -108,7 +108,7 @@ $ python3.7 began.py
     <img src="assets/began.gif" width="200"\>
 </p>
 
-### BicycleGAN [zwy]
+### BicycleGAN
 _Toward Multimodal Image-to-Image Translation_
 
 #### Authors
@@ -119,10 +119,6 @@ Many image-to-image translation problems are ambiguous, as a single input image 
 
 [[Paper]](https://arxiv.org/abs/1711.11586) [[Code]](models/bicyclegan/bicyclegan.py)
 
-<p align="center">
-    <img src="assets/bicyclegan_architecture.jpg" width="800"\>
-</p>
-
 #### Run Example
 ```
 $ cd data/
@@ -132,7 +128,7 @@ $ python3.7 bicyclegan.py
 ```
 
 <p align="center">
-    <img src="assets/bicyclegan.gif" width="200"\>
+    <img src="assets/bicyclegan.png" width="200"\>
 </p>
 <p align="center">
     Various style translations by varying the latent code.
@@ -189,7 +185,7 @@ $ python3.7 clustergan.py
 </p>
 
 
-### Conditional GAN [zwy]
+### Conditional GAN
 _Conditional Generative Adversarial Nets_
 
 #### Authors
@@ -252,7 +248,7 @@ $ python3.7 context_encoder.py
     Rows: Masked | Inpainted | Original | Masked | Inpainted | Original
 </p>
 
-### Coupled GAN [zwy]
+### Coupled GAN
 _Coupled Generative Adversarial Networks_
 
 #### Authors
@@ -276,7 +272,7 @@ $ python3.7 cogan.py
     Generated MNIST and MNIST-M images
 </p>
 
-### CycleGAN [zwy]
+### CycleGAN
 _Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks_
 
 #### Authors
@@ -286,10 +282,6 @@ Jun-Yan Zhu, Taesung Park, Phillip Isola, Alexei A. Efros
 Image-to-image translation is a class of vision and graphics problems where the goal is to learn the mapping between an input image and an output image using a training set of aligned image pairs. However, for many tasks, paired training data will not be available. We present an approach for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples. Our goal is to learn a mapping G:X→Y such that the distribution of images from G(X) is indistinguishable from the distribution Y using an adversarial loss. Because this mapping is highly under-constrained, we couple it with an inverse mapping F:Y→X and introduce a cycle consistency loss to push F(G(X))≈X (and vice versa). Qualitative results are presented on several tasks where paired training data does not exist, including collection style transfer, object transfiguration, season transfer, photo enhancement, etc. Quantitative comparisons against several prior methods demonstrate the superiority of our approach.
 
 [[Paper]](https://arxiv.org/abs/1703.10593) [[Code]](models/cyclegan/cyclegan.py)
-
-<p align="center">
-    <img src="http://eriklindernoren.se/images/cyclegan.png" width="640"\>
-</p>
 
 #### Run Example
 ```
@@ -327,7 +319,7 @@ $ python3.7 dcgan.py
     <img src="assets/dcgan.gif" width="240"\>
 </p>
 
-### DiscoGAN [zwy]
+### DiscoGAN
 _Learning to Discover Cross-Domain Relations with Generative Adversarial Networks_
 
 #### Authors
@@ -337,10 +329,6 @@ Taeksoo Kim, Moonsu Cha, Hyunsoo Kim, Jung Kwon Lee, Jiwon Kim
 While humans easily recognize relations between data from different domains without any supervision, learning to automatically discover them is in general very challenging and needs many ground-truth pairs that illustrate the relations. To avoid costly pairing, we address the task of discovering cross-domain relations given unpaired data. We propose a method based on generative adversarial networks that learns to discover relations between different domains (DiscoGAN). Using the discovered relations, our proposed network successfully transfers style from one domain to another while preserving key attributes such as orientation and face identity.
 
 [[Paper]](https://arxiv.org/abs/1703.05192) [[Code]](models/discogan/discogan.py)
-
-<p align="center">
-    <img src="http://eriklindernoren.se/images/discogan_architecture.png" width="640"\>
-</p>
 
 #### Run Example
 ```
@@ -376,7 +364,7 @@ $ cd models/dragan/
 $ python3.7 dragan.py
 ```
 
-### DualGAN [zwy]
+### DualGAN
 _DualGAN: Unsupervised Dual Learning for Image-to-Image Translation_
 
 #### Authors
@@ -417,7 +405,7 @@ $ cd models/ebgan/
 $ python3.7 ebgan.py
 ```
 
-### Enhanced Super-Resolution GAN [zwy]
+### Enhanced Super-Resolution GAN
 _ESRGAN: Enhanced Super-Resolution Generative Adversarial Networks_
 
 #### Authors
@@ -438,13 +426,6 @@ $ python3.7 esrgan.py
 
 <p align="center">
     <img src="assets/esrgan.gif" width="320"\>
-</p>
-
-<p align="center">
-    <img src="assets/enhanced_superresgan.png" width="320"\>
-</p>
-<p align="center">
-    Nearest Neighbor Upsampling | ESRGAN
 </p>
 
 ### GAN
@@ -484,14 +465,6 @@ This paper describes InfoGAN, an information-theoretic extension to the Generati
 $ cd models/infogan/
 $ python3.7 infogan.py
 ```
-
-<p align="center">
-    <img src="assets/infogan.gif" width="200"\>
-</p>
-<p align="center">
-    Result of varying categorical latent variable by column.
-</p>
-
 <p align="center">
     <img src="assets/infogan.png" width="200"\>
 </p>
@@ -515,33 +488,6 @@ Unsupervised learning with generative adversarial networks (GANs) has proven hug
 $ cd models/lsgan/
 $ python3.7 lsgan.py
 ```
-
-
-### MUNIT
-_Multimodal Unsupervised Image-to-Image Translation_
-
-#### Authors
-Xun Huang, Ming-Yu Liu, Serge Belongie, Jan Kautz
-
-#### Abstract
-Unsupervised image-to-image translation is an important and challenging problem in computer vision. Given an image in the source domain, the goal is to learn the conditional distribution of corresponding images in the target domain, without seeing any pairs of corresponding images. While this conditional distribution is inherently multimodal, existing approaches make an overly simplified assumption, modeling it as a deterministic one-to-one mapping. As a result, they fail to generate diverse outputs from a given source domain image. To address this limitation, we propose a Multimodal Unsupervised Image-to-image Translation (MUNIT) framework. We assume that the image representation can be decomposed into a content code that is domain-invariant, and a style code that captures domain-specific properties. To translate an image to another domain, we recombine its content code with a random style code sampled from the style space of the target domain. We analyze the proposed framework and establish several theoretical results. Extensive experiments with comparisons to the state-of-the-art approaches further demonstrates the advantage of the proposed framework. Moreover, our framework allows users to control the style of translation outputs by providing an example style image. Code and pretrained models are available at [this https URL](https://github.com/nvlabs/MUNIT)
-
-[[Paper]](https://arxiv.org/abs/1804.04732) [[Code]](models/munit/munit.py)
-
-#### Run Example
-```
-$ cd data/
-$ bash download_pix2pix_dataset.sh edges2shoes
-$ cd ../models/munit/
-$ python3.7 munit.py --dataset_name edges2shoes
-```
-
-<p align="center">
-    <img src="assets/munit.png" width="200"\>
-</p>
-<p align="center">
-    Results by varying the style code.
-</p>
 
 ### Pix2Pix
 _Unpaired Image-to-Image Translation with Conditional Adversarial Networks_
@@ -574,7 +520,7 @@ $ python3.7 pix2pix.py --dataset_name facades
     based of condition (3) The true corresponding image to the condition
 </p>
 
-### PixelDA [zwy]
+### PixelDA
 _Unsupervised Pixel-Level Domain Adaptation with Generative Adversarial Networks_
 
 #### Authors
@@ -592,10 +538,6 @@ Trains a classifier on images that have been translated from the source domain (
 $ cd models/pixelda/
 $ python3.7 pixelda.py
 ```  
-| Method       | Accuracy  |
-| ------------ |:---------:|
-| Naive        | 55%       |
-| PixelDA      | 95%       |
 
 <p align="center">
     <img src="assets/pixelda.gif" width="200"\>
@@ -626,7 +568,7 @@ $ python3.7 relativistic_gan.py                 # Relativistic Standard GAN
 $ python3.7 relativistic_gan.py --rel_avg_gan   # Relativistic Average GAN
 ```
 
-### Semi-Supervised GAN [zwy]
+### Semi-Supervised GAN
 _Semi-Supervised Generative Adversarial Network_
 
 #### Authors
@@ -642,10 +584,6 @@ We extend Generative Adversarial Networks (GANs) to the semi-supervised context 
 $ cd models/sgan/
 $ python3.7 sgan.py
 ```
-
-<p align="center">
-    <img src="assets/sgan.gif" width="200"\>
-</p>
 
 ### Softmax GAN
 _Softmax GAN_
@@ -700,23 +638,12 @@ Despite the breakthroughs in accuracy and speed of single image super-resolution
 
 [[Paper]](https://arxiv.org/abs/1609.02002) [[Code]](models/srgan/srgan.py)
 
-<p align="center">
-    <img src="http://eriklindernoren.se/images/superresgan.png" width="640"\>
-</p>
-
 #### Run Example
 ```
 $ cd models/srgan/
 <follow steps at the top of srgan.py>
 $ python3.7 srgan.py
 ```
-
-<p align="center">
-    <img src="assets/superresgan.png" width="320"\>
-</p>
-<p align="center">
-    Nearest Neighbor Upsampling | SRGAN
-</p>
 
 ### UNIT
 _Unsupervised Image-to-Image Translation Networks_
@@ -775,7 +702,7 @@ $ python3.7 wgan_gp.py
     <img src="assets/wgan_gp.gif" width="240"\>
 </p>
 
-### Wasserstein GAN DIV [zwy]
+### Wasserstein GAN DIV
 _Wasserstein Divergence for GANs_
 
 #### Authors
