@@ -154,7 +154,7 @@ for epoch in range(opt.n_epochs):
         
         optimizer_D.step(d_loss)
         
-        jt.sync_all(True)
+        jt.sync_all()
         if i % 50 == 0:
             print(
                 "[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f] [Time: %f]"

@@ -26,8 +26,8 @@ parser.add_argument("--b1", type=float, default=0.5, help="adam: decay of first 
 parser.add_argument("--b2", type=float, default=0.999, help="adam: decay of first order momentum of gradient")
 parser.add_argument("--decay_epoch", type=int, default=100, help="epoch from which to start lr decay")
 parser.add_argument("--n_cpu", type=int, default=8, help="number of cpu threads to use during batch generation")
-parser.add_argument("--img_height", type=int, default=256, help="size of image height")
-parser.add_argument("--img_width", type=int, default=256, help="size of image width")
+parser.add_argument("--img_height", type=int, default=64, help="size of image height")
+parser.add_argument("--img_width", type=int, default=64, help="size of image width")
 parser.add_argument("--channels", type=int, default=3, help="number of image channels")
 parser.add_argument("--sample_interval", type=int, default=100, help="interval between saving generator outputs")
 parser.add_argument("--checkpoint_interval", type=int, default=-1, help="interval between saving model checkpoints")
@@ -76,7 +76,7 @@ transform_ = [
 # Training data loader
 dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, transform_=transform_, unaligned=True).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
 
-val_dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, transform_=transform_, unaligned=True, mode="test").set_attrs(batch_size=1, shuffle=True, num_workers=1)
+val_dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, transform_=transform_, unaligned=True, mode="test").set_attrs(batch_size=5, shuffle=True, num_workers=1)
 
 def sample_images(batches_done):
     """Saves a generated sample from the test set"""
@@ -85,9 +85,9 @@ def sample_images(batches_done):
     G_BA.eval()
 
 
-    real_A = imgs[0]
+    real_A = imgs[0].stop_grad()
     fake_B = G_AB(real_A)
-    real_B = imgs[1]
+    real_B = imgs[1].stop_grad()
     fake_A = G_BA(real_B)
     # Arange images along x-axis
     real_A = make_grid(torch.Tensor(real_A.numpy()), nrow=5, normalize=True)
@@ -95,7 +95,7 @@ def sample_images(batches_done):
     fake_A = make_grid(torch.Tensor(fake_A.numpy()), nrow=5, normalize=True)
     fake_B = make_grid(torch.Tensor(fake_B.numpy()), nrow=5, normalize=True)
     # Arange images along y-axis
-    image_grid = cat((real_A, fake_B, real_B, fake_A), 1)
+    image_grid = torch.cat((real_A, fake_B, real_B, fake_A), 1)
     save_image(image_grid, "images/%s/%s.png" % (opt.dataset_name, batches_done), normalize=False)
 
 
@@ -157,7 +157,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
         loss_real = criterion_GAN(D_A(real_A), valid)
         # Fake loss (on batch of previously generated samples)
         fake_A_ = fake_A_buffer.push_and_pop(fake_A)
-        loss_fake = criterion_GAN(D_A(fake_A_.detach()), fake)
+        loss_fake = criterion_GAN(D_A(fake_A_.stop_grad()), fake)
         # Total loss
         loss_D_A = (loss_real + loss_fake) / 2
 
@@ -171,7 +171,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
         loss_real = criterion_GAN(D_B(real_B), valid)
         # Fake loss (on batch of previously generated samples)
         fake_B_ = fake_B_buffer.push_and_pop(fake_B)
-        loss_fake = criterion_GAN(D_B(fake_B_.detach()), fake)
+        loss_fake = criterion_GAN(D_B(fake_B_.stop_grad()), fake)
         # Total loss
         loss_D_B = (loss_real + loss_fake) / 2
 
