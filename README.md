@@ -26,7 +26,6 @@ Collection of Jittor models of Generative Adversarial Network varieties presente
     + [GAN](#gan)
     + [InfoGAN](#infogan)
     + [Least Squares GAN](#least-squares-gan)
-    + [MUNIT](#munit)
     + [Pix2Pix](#pix2pix)
     + [PixelDA](#pixelda)
     + [Relativistic GAN](#relativistic-gan)
@@ -42,7 +41,7 @@ Collection of Jittor models of Generative Adversarial Network varieties presente
 ## Installation
     $ git clone https://github.com/Jittor/gan-jittor.git
     $ cd gan-jittor/
-    $ sudo python3.7.7 -m pip install -r requirements.txt
+    $ sudo python3.7 -m pip install -r requirements.txt
 
 ## models   
 ### Auxiliary Classifier GAN
@@ -128,7 +127,7 @@ $ python3.7 bicyclegan.py
 ```
 
 <p align="center">
-    <img src="assets/bicyclegan.png" width="200"\>
+    <img src="assets/bicyclegan.png" width="400"\>
 </p>
 <p align="center">
     Various style translations by varying the latent code.
@@ -292,7 +291,7 @@ $ python3.7 cyclegan.py --dataset_name monet2photo
 ```
 
 <p align="center">
-    <img src="assets/cyclegan.png" width="900"\>
+    <img src="assets/cyclegan.png" width="400"\>
 </p>
 <p align="center">
     Monet to photo translations.
