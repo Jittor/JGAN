@@ -6,13 +6,9 @@ import itertools
 import datetime
 import time
 
-from torchvision.utils import save_image, make_grid
-
 from models import *
 from datasets import *
 from utils import *
-
-import torch
 
 jt.flags.use_cuda = 1
 
@@ -74,9 +70,36 @@ transform_ = [
 ]
 
 # Training data loader
-dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, transform_=transform_, unaligned=True).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
+dataloader = ImageDataset("../data/%s" % opt.dataset_name, transform_=transform_, unaligned=True).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
 
-val_dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, transform_=transform_, unaligned=True, mode="test").set_attrs(batch_size=5, shuffle=True, num_workers=1)
+val_dataloader = ImageDataset("../data/%s" % opt.dataset_name, transform_=transform_, unaligned=True, mode="test").set_attrs(batch_size=5, shuffle=True, num_workers=1)
+from pdb import set_trace as st
+
+import cv2
+def save_image(img, path, nrow=10, padding=5):
+    N,C,W,H = img.shape
+    if (N%nrow!=0):
+        print("N%nrow!=0")
+        return
+    ncol=int(N/nrow)
+    img_all = []
+    for i in range(ncol):
+        img_ = []
+        for j in range(nrow):
+            img_.append(img[i*nrow+j])
+            img_.append(np.zeros((C,W,padding)))
+        img_all.append(np.concatenate(img_, 2))
+        img_all.append(np.zeros((C,padding,img_all[0].shape[2])))
+    img = np.concatenate(img_all, 1)
+    img = np.concatenate([np.zeros((C,padding,img.shape[2])), img], 1)
+    img = np.concatenate([np.zeros((C,img.shape[1],padding)), img], 2)
+    min_=img.min()
+    max_=img.max()
+    img=(img-min_)/(max_-min_)*255
+    img=img.transpose((1,2,0))
+    if C==3:
+        img = img[:,:,::-1]
+    cv2.imwrite(path,img)
 
 def sample_images(batches_done):
     """Saves a generated sample from the test set"""
@@ -90,13 +113,21 @@ def sample_images(batches_done):
     real_B = imgs[1].stop_grad()
     fake_A = G_BA(real_B)
     # Arange images along x-axis
-    real_A = make_grid(torch.Tensor(real_A.numpy()), nrow=5, normalize=True)
-    real_B = make_grid(torch.Tensor(real_B.numpy()), nrow=5, normalize=True)
-    fake_A = make_grid(torch.Tensor(fake_A.numpy()), nrow=5, normalize=True)
-    fake_B = make_grid(torch.Tensor(fake_B.numpy()), nrow=5, normalize=True)
+    real_A_ = []
+    for i in range(5): real_A_.append(real_A.numpy()[i])
+    real_A = np.concatenate(real_A_, -1)[np.newaxis,:,:,:]
+    real_B_ = []
+    for i in range(5): real_B_.append(real_B.numpy()[i])
+    real_B = np.concatenate(real_B_, -1)[np.newaxis,:,:,:]
+    fake_A_ = []
+    for i in range(5): fake_A_.append(fake_A.numpy()[i])
+    fake_A = np.concatenate(fake_A_, -1)[np.newaxis,:,:,:]
+    fake_B_ = []
+    for i in range(5): fake_B_.append(fake_B.numpy()[i])
+    fake_B = np.concatenate(fake_B_, -1)[np.newaxis,:,:,:]
     # Arange images along y-axis
-    image_grid = torch.cat((real_A, fake_B, real_B, fake_A), 1)
-    save_image(image_grid, "images/%s/%s.png" % (opt.dataset_name, batches_done), normalize=False)
+    image_grid = np.concatenate((real_A, fake_B, real_B, fake_A), 0)
+    save_image(image_grid, "images/%s/%s.png" % (opt.dataset_name, batches_done), 1)
 
 
 # ----------
@@ -171,6 +202,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
         loss_real = criterion_GAN(D_B(real_B), valid)
         # Fake loss (on batch of previously generated samples)
         fake_B_ = fake_B_buffer.push_and_pop(fake_B)
+        fake_B_.sync()
         loss_fake = criterion_GAN(D_B(fake_B_.stop_grad()), fake)
         # Total loss
         loss_D_B = (loss_real + loss_fake) / 2

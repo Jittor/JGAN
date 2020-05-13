@@ -48,9 +48,9 @@ optimizer_G = nn.Adam(encoder.parameters() + generator.parameters(), lr=opt.lr, 
 optimizer_D_VAE = nn.Adam(D_VAE.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 optimizer_D_LR = nn.Adam(D_LR.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
-dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name,   input_shape).set_attrs(batch_size=opt.batch_size, shuffle=False, num_workers=opt.n_cpu)
+dataloader = ImageDataset("../data/%s" % opt.dataset_name,   input_shape).set_attrs(batch_size=opt.batch_size, shuffle=False, num_workers=opt.n_cpu)
 
-valdataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name,   input_shape, mode="val").set_attrs(batch_size=8, shuffle=False, num_workers=1)
+valdataloader = ImageDataset("../data/%s" % opt.dataset_name,   input_shape, mode="val").set_attrs(batch_size=8, shuffle=False, num_workers=1)
 
 
 def reparameterization(mu, logvar):

@@ -11,9 +11,6 @@ from models import *
 from datasets import *
 import jittor as jt
 
-from torchvision.utils import save_image
-import torch
-
 jt.flags.use_cuda = 1
 
 parser = argparse.ArgumentParser()
@@ -35,7 +32,6 @@ parser.add_argument("--n_downsample", type=int, default=2, help="number downsamp
 parser.add_argument("--dim", type=int, default=64, help="number of filters in first encoder layer")
 opt = parser.parse_args()
 print(opt)
-
 
 # Create sample and checkpoint directories
 os.makedirs("images/%s" % opt.dataset_name, exist_ok=True)
@@ -84,27 +80,36 @@ transform_ = [
     transform.ImageNormalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
 ]
 
-dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, transforms_=transform_, unaligned=True).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
+dataloader = ImageDataset("../data/%s" % opt.dataset_name, transforms_=transform_, unaligned=True).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
 
-val_dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, transforms_=transform_, unaligned=True, mode="test").set_attrs(batch_size=5, shuffle=True, num_workers=1)
+val_dataloader = ImageDataset("../data/%s" % opt.dataset_name, transforms_=transform_, unaligned=True, mode="test").set_attrs(batch_size=5, shuffle=True, num_workers=1)
 
-# import cv2
-from pdb import set_trace as st
-# def save_image(img, path, nrow=10):
-#     N,C,H,W = img.shape
-#     if N > nrow * nrow:
-#         img = img[:nrow*nrow,:]
-#     elif N < nrow * nrow:
-#         img = np.concatenate([img, np.zeros((nrow*nrow-N,C,H,W))],axis=0)
-#     img2 = img.reshape([-1,W*nrow*nrow,H])
-#     img = img2[:,:W*nrow,:]
-#     for i in range(1,nrow):
-#         img = np.concatenate([img,img2[:,W*nrow*i:W*nrow*(i+1),:]],axis=2)
-#     min_ = img.min()
-#     max_ = img.max()
-#     img = (img - min_) / (max_ - min_) * 255
-#     img = img.transpose((1,2,0))
-#     cv2.imwrite(path,img)
+import cv2
+
+def save_image(img, path, nrow=10, padding=5):
+    N,C,W,H = img.shape
+    if (N%nrow!=0):
+        print("N%nrow!=0")
+        return
+    ncol=int(N/nrow)
+    img_all = []
+    for i in range(ncol):
+        img_ = []
+        for j in range(nrow):
+            img_.append(img[i*nrow+j])
+            img_.append(np.zeros((C,W,padding)))
+        img_all.append(np.concatenate(img_, 2))
+        img_all.append(np.zeros((C,padding,img_all[0].shape[2])))
+    img = np.concatenate(img_all, 1)
+    img = np.concatenate([np.zeros((C,padding,img.shape[2])), img], 1)
+    img = np.concatenate([np.zeros((C,img.shape[1],padding)), img], 2)
+    min_=img.min()
+    max_=img.max()
+    img=(img-min_)/(max_-min_)*255
+    img=img.transpose((1,2,0))
+    if C==3:
+        img = img[:,:,::-1]
+    cv2.imwrite(path,img)
 
 def sample_images(batches_done):
     """Saves a generated sample from the test set"""
@@ -120,8 +125,7 @@ def sample_images(batches_done):
     fake_X1 = G1(Z2)
     fake_X2 = G2(Z1)
     img_sample = jt.contrib.concat((X1, fake_X2, X2, fake_X1), 0)
-    save_image(torch.Tensor(img_sample.numpy()), "images/%s/%s.png" % (opt.dataset_name, batches_done), nrow=5, normalize=True)
-
+    save_image(img_sample.numpy(), "images/%s/%s.png" % (opt.dataset_name, batches_done), nrow=5)
 
 def compute_kl(mu):
     mu_2 = mu.sqr()

@@ -10,18 +10,6 @@ from jittor import init
 from jittor import nn
 jt.flags.use_cuda = 1
 
-def save_image(img, path, nrow=10):
-    N,C,W,H = img.shape
-    img2 = img.reshape([-1,W*nrow*nrow,H])
-    img = img2[:,:W*nrow,:]
-    for i in range(1,nrow):
-        img = np.concatenate([img,img2[:,W*nrow*i:W*nrow*(i+1),:]],axis=2)
-    min_ = img.min()
-    max_ = img.max()
-    img = (img - min_) / (max_ - min_) * 255
-    img = img.transpose((1,2,0))
-    cv2.imwrite(path,img)
-
 os.makedirs("images", exist_ok=True)
 
 parser = argparse.ArgumentParser()
@@ -105,6 +93,31 @@ optimizer_G = nn.Adam(
     itertools.chain(encoder.parameters(), decoder.parameters()), lr=opt.lr, betas=(opt.b1, opt.b2)
 )
 optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+
+def save_image(img, path, nrow=10, padding=5):
+    N,C,W,H = img.shape
+    if (N%nrow!=0):
+        print("N%nrow!=0")
+        return
+    ncol=int(N/nrow)
+    img_all = []
+    for i in range(ncol):
+        img_ = []
+        for j in range(nrow):
+            img_.append(img[i*nrow+j])
+            img_.append(np.zeros((C,W,padding)))
+        img_all.append(np.concatenate(img_, 2))
+        img_all.append(np.zeros((C,padding,img_all[0].shape[2])))
+    img = np.concatenate(img_all, 1)
+    img = np.concatenate([np.zeros((C,padding,img.shape[2])), img], 1)
+    img = np.concatenate([np.zeros((C,img.shape[1],padding)), img], 2)
+    min_=img.min()
+    max_=img.max()
+    img=(img-min_)/(max_-min_)*255
+    img=img.transpose((1,2,0))
+    if C==3:
+        img = img[:,:,::-1]
+    cv2.imwrite(path,img)
 
 def sample_image(n_row, batches_done):
     """Saves a grid of generated digits"""

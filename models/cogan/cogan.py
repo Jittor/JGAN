@@ -9,8 +9,6 @@ import math
 import scipy
 import itertools
 import mnistm
-from torchvision.utils import save_image
-import torch
 from jittor.dataset.mnist import MNIST
 import jittor.transform as transform
 
@@ -90,6 +88,32 @@ class CoupledDiscriminators(nn.Module):
         validity2 = self.D2(out)
         return (validity1, validity2)
 
+import cv2
+def save_image(img, path, nrow=10, padding=5):
+    N,C,W,H = img.shape
+    if (N%nrow!=0):
+        print("N%nrow!=0")
+        return
+    ncol=int(N/nrow)
+    img_all = []
+    for i in range(ncol):
+        img_ = []
+        for j in range(nrow):
+            img_.append(img[i*nrow+j])
+            img_.append(np.zeros((C,W,padding)))
+        img_all.append(np.concatenate(img_, 2))
+        img_all.append(np.zeros((C,padding,img_all[0].shape[2])))
+    img = np.concatenate(img_all, 1)
+    img = np.concatenate([np.zeros((C,padding,img.shape[2])), img], 1)
+    img = np.concatenate([np.zeros((C,img.shape[1],padding)), img], 2)
+    min_=img.min()
+    max_=img.max()
+    img=(img-min_)/(max_-min_)*255
+    img=img.transpose((1,2,0))
+    if C==3:
+        img = img[:,:,::-1]
+    cv2.imwrite(path,img)
+
 # Loss function
 adversarial_loss = nn.MSELoss()
 
@@ -166,5 +190,5 @@ for epoch in range(opt.n_epochs):
 
         batches_done = epoch * len(dataloader1) + i
         if batches_done % opt.sample_interval == 0:
-            gen_imgs = torch.cat((torch.Tensor(gen_imgs1.numpy()), torch.Tensor(gen_imgs2.numpy())), 0)
-            save_image(gen_imgs, "images/%d.png" % batches_done, nrow=8, normalize=True)
+            gen_imgs = np.concatenate([gen_imgs1.numpy(), gen_imgs2.numpy()], 0)
+            save_image(gen_imgs, "images/%d.png" % batches_done, nrow=8)

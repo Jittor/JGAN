@@ -5,11 +5,22 @@ from jittor import nn
 from jittor.models import vgg19
 import math
 
+def weights_init_normal(m):
+    classname = m.__class__.__name__
+    if classname.find("Conv") != -1:
+        init.gauss_(m.weight, 0.0, 0.02)
+        init.gauss_(m.bias, 0.0, 0.02)
+    elif classname.find("BatchNorm") != -1:
+        init.gauss_(m.weight, 1.0, 0.02)
+        init.constant_(m.bias, 0.0)
+
 class FeatureExtractor(nn.Module):
     def __init__(self):
         super(FeatureExtractor, self).__init__()
         vgg19_model = vgg19()
         self.vgg19_54 = nn.Sequential(*list(vgg19_model.features.children())[:35])
+        for m in self.modules():
+            weights_init_normal(m)
 
     def execute(self, img):
         return self.vgg19_54(img)
@@ -30,7 +41,7 @@ class DenseResidualBlock(nn.Module):
         self.b4 = block(in_features=(4 * filters))
         self.b5 = block(in_features=(5 * filters), non_linearity=False)
         self.blocks = [self.b1, self.b2, self.b3, self.b4, self.b5]
-
+        
     def execute(self, x):
         inputs = x
         for block in self.blocks:
@@ -60,6 +71,8 @@ class GeneratorRRDB(nn.Module):
             upsample_layers += [nn.Conv(filters, (filters * 4), 3, stride=1, padding=1), nn.LeakyReLU(), nn.PixelShuffle(upscale_factor=2)]
         self.upsampling = nn.Sequential(*upsample_layers)
         self.conv3 = nn.Sequential(nn.Conv(filters, filters, 3, stride=1, padding=1), nn.LeakyReLU(), nn.Conv(filters, channels, 3, stride=1, padding=1))
+        for m in self.modules():
+            weights_init_normal(m)
 
     def execute(self, x):
         out1 = self.conv1(x)
@@ -96,6 +109,8 @@ class Discriminator(nn.Module):
             in_filters = out_filters
         layers.append(nn.Conv(out_filters, 1, 3, stride=1, padding=1))
         self.model = nn.Sequential(*layers)
+        for m in self.modules():
+            weights_init_normal(m)
 
     def execute(self, img):
         return self.model(img)

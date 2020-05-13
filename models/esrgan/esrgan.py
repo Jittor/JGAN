@@ -5,7 +5,7 @@ The dataset can be downloaded from: https://www.dropbox.com/sh/8oqt9vytwxb3s4r/A
 Instrustion on running the script:
 1. Download the dataset from the provided link
 2. Save the folder 'img_align_celeba' to '../../data/'
-4. Run the sript using command 'python3 esrgan.py'
+4. Run the sript using command 'python3.7 esrgan.py'
 """
 
 import argparse
@@ -15,12 +15,9 @@ import math
 import itertools
 import sys
 
-from torchvision.utils import save_image, make_grid
-
 from models import *
 from datasets import *
 
-import torch
 import jittor as jt
 
 jt.flags.use_cuda = 1
@@ -50,16 +47,39 @@ parser.add_argument("--lambda_pixel", type=float, default=1e-2, help="pixel-wise
 opt = parser.parse_args()
 print(opt)
 
+import cv2
+from pdb import set_trace as st
+def save_image(img, path, nrow=10, padding=5):
+    N,C,W,H = img.shape
+    if (N%nrow!=0):
+        print("N%nrow!=0")
+        return
+    ncol=int(N/nrow)
+    img_all = []
+    for i in range(ncol):
+        img_ = []
+        for j in range(nrow):
+            img_.append(img[i*nrow+j])
+            img_.append(np.zeros((C,W,padding)))
+        img_all.append(np.concatenate(img_, 2))
+        img_all.append(np.zeros((C,padding,img_all[0].shape[2])))
+    img = np.concatenate(img_all, 1)
+    img = np.concatenate([np.zeros((C,padding,img.shape[2])), img], 1)
+    img = np.concatenate([np.zeros((C,img.shape[1],padding)), img], 2)
+    min_=img.min()
+    max_=img.max()
+    img=(img-min_)/(max_-min_)*255
+    img=img.transpose((1,2,0))
+    if C==3:
+        img = img[:,:,::-1]
+    cv2.imwrite(path,img)
+
 hr_shape = (opt.hr_height, opt.hr_width)
 
 # Initialize generator and discriminator
 generator = GeneratorRRDB(opt.channels, filters=64, num_res_blocks=opt.residual_blocks)
 discriminator = Discriminator(input_shape=(opt.channels, *hr_shape))
 feature_extractor = FeatureExtractor()
-
-generator.load_parameters(torch.load('/home/storage/zwy/workspace/GAN/PyTorch-GAN/implementations/esrgan/generator_init.pth'))
-discriminator.load_parameters(torch.load('/home/storage/zwy/workspace/GAN/PyTorch-GAN/implementations/esrgan/discriminator_init.pth'))
-feature_extractor.load_parameters(torch.load('/home/storage/zwy/workspace/GAN/PyTorch-GAN/implementations/esrgan/feature_extractor_init.pth'))
 
 # Set feature extractor to inference mode
 feature_extractor.eval()
@@ -72,12 +92,10 @@ criterion_pixel = nn.L1Loss()
 # Optimizers
 optimizer_G = nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-
-dataloader = ImageDataset("../../data/%s" % opt.dataset_name, hr_shape=hr_shape).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
+dataloader = ImageDataset("../../../jittor-GAN/data/%s" % opt.dataset_name, hr_shape=hr_shape).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
 # ----------
 #  Training
 # ----------
-from pdb import set_trace as st
 for epoch in range(opt.epoch, opt.n_epochs):
     for i, imgs in enumerate(dataloader):
         batches_done = epoch * len(dataloader) + i
@@ -166,4 +184,4 @@ for epoch in range(opt.epoch, opt.n_epochs):
             # Save image grid with upsampled inputs and ESRGAN outputs
             imgs_lr = nn.Upsample(4)(imgs_lr)
             img_grid = denormalize(jt.contrib.concat((imgs_lr, gen_hr), 3))
-            save_image(torch.Tensor(img_grid.numpy()), "images/training/%d.png" % batches_done, nrow=1, normalize=False)
+            save_image(img_grid.numpy(), "images/training/%d.png" % batches_done, nrow=1)

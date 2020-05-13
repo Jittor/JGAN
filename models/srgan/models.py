@@ -1,9 +1,17 @@
-
 import jittor as jt
 from jittor import init
 from jittor import nn
 from jittor.models import vgg19
 import math
+
+def weights_init_normal(m):
+    classname = m.__class__.__name__
+    if classname.find("Conv") != -1:
+        init.gauss_(m.weight, 0.0, 0.02)
+        init.gauss_(m.bias, 0.0, 0.02)
+    elif classname.find("BatchNorm") != -1:
+        init.gauss_(m.weight, 1.0, 0.02)
+        init.constant_(m.bias, 0.0)
 
 class FeatureExtractor(nn.Module):
 
@@ -11,6 +19,8 @@ class FeatureExtractor(nn.Module):
         super(FeatureExtractor, self).__init__()
         vgg19_model = vgg19()
         self.feature_extractor = nn.Sequential(*list(vgg19_model.features.children())[:18])
+        for m in self.modules():
+            weights_init_normal(m)
 
     def execute(self, img):
         return self.feature_extractor(img)
@@ -39,6 +49,8 @@ class GeneratorResNet(nn.Module):
             upsampling += [nn.Conv(64, 256, 3, stride=1, padding=1), nn.BatchNorm(256), nn.PixelShuffle(upscale_factor=2), nn.PReLU()]
         self.upsampling = nn.Sequential(*upsampling)
         self.conv3 = nn.Sequential(nn.Conv(64, out_channels, 9, stride=1, padding=4), nn.Tanh())
+        for m in self.modules():
+            weights_init_normal(m)
 
     def execute(self, x):
         out1 = self.conv1(x)
@@ -75,6 +87,8 @@ class Discriminator(nn.Module):
             in_filters = out_filters
         layers.append(nn.Conv(out_filters, 1, 3, stride=1, padding=1))
         self.model = nn.Sequential(*layers)
+        for m in self.modules():
+            weights_init_normal(m)
 
     def execute(self, img):
         return self.model(img)

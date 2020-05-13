@@ -14,13 +14,10 @@ import numpy as np
 import math
 import itertools
 import sys
-
-from torchvision.utils import save_image, make_grid
 from models import *
 from datasets import *
-import torch
 import jittor as jt
-
+from pdb import set_trace as st
 jt.flags.use_cuda = 1
 
 os.makedirs("images", exist_ok=True)
@@ -51,10 +48,6 @@ generator = GeneratorResNet()
 discriminator = Discriminator(input_shape=(opt.channels, *hr_shape))
 feature_extractor = FeatureExtractor()
 
-generator.load_parameters(torch.load('/home/storage/zwy/workspace/GAN/PyTorch-GAN/implementations/srgan/generator_init.pth'))
-discriminator.load_parameters(torch.load('/home/storage/zwy/workspace/GAN/PyTorch-GAN/implementations/srgan/discriminator_init.pth'))
-feature_extractor.load_parameters(torch.load('/home/storage/zwy/workspace/GAN/PyTorch-GAN/implementations/srgan/feature_extractor_init.pth'))
-
 # Set feature extractor to inference mode
 feature_extractor.eval()
 
@@ -62,12 +55,38 @@ feature_extractor.eval()
 criterion_GAN = nn.MSELoss()
 criterion_content = nn.L1Loss()
 
+import cv2
+
+def save_image(img, path, nrow=10, padding=5):
+    N,C,W,H = img.shape
+    if (N%nrow!=0):
+        print("N%nrow!=0")
+        return
+    ncol=int(N/nrow)
+    img_all = []
+    for i in range(ncol):
+        img_ = []
+        for j in range(nrow):
+            img_.append(img[i*nrow+j])
+            img_.append(np.zeros((C,W,padding)))
+        img_all.append(np.concatenate(img_, 2))
+        img_all.append(np.zeros((C,padding,img_all[0].shape[2])))
+    img = np.concatenate(img_all, 1)
+    img = np.concatenate([np.zeros((C,padding,img.shape[2])), img], 1)
+    img = np.concatenate([np.zeros((C,img.shape[1],padding)), img], 2)
+    min_=img.min()
+    max_=img.max()
+    img=(img-min_)/(max_-min_)*255
+    img=img.transpose((1,2,0))
+    if C==3:
+        img = img[:,:,::-1]
+    cv2.imwrite(path,img)
 
 # Optimizers
 optimizer_G = nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
-dataloader = ImageDataset("../../data/%s" % opt.dataset_name, hr_shape=hr_shape).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
+dataloader = ImageDataset("../../../jittor-GAN/data/%s" % opt.dataset_name, hr_shape=hr_shape).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
 # ----------
 #  Training
 # ----------
@@ -129,7 +148,5 @@ for epoch in range(opt.epoch, opt.n_epochs):
         if batches_done % opt.sample_interval == 0:
             # Save image grid with upsampled inputs and SRGAN outputs
             imgs_lr = nn.Upsample(4)(imgs_lr)
-            gen_hr = make_grid(torch.Tensor(gen_hr.numpy()), nrow=1, normalize=True)
-            imgs_lr = make_grid(torch.Tensor(imgs_lr.numpy()), nrow=1, normalize=True)
-            img_grid = torch.cat((imgs_lr, gen_hr), -1)
-            save_image(img_grid, "images/%d.png" % batches_done, normalize=False)
+            img_grid = np.concatenate([gen_hr.numpy(), imgs_lr.numpy()], -1)
+            save_image(img_grid, "images/%d.png" % batches_done, 1)

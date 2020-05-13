@@ -3,13 +3,11 @@ import random
 import os
 import numpy as np
 
-import torch
 from jittor.dataset.dataset import Dataset
 from PIL import Image
 import jittor.transform as transform
 import jittor as jt
 
-# Normalization parameters for pre-trained PyTorch models
 mean = np.array([0.485, 0.456, 0.406])
 std = np.array([0.229, 0.224, 0.225])
 

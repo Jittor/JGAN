@@ -2,6 +2,15 @@ import jittor as jt
 from jittor import init
 from jittor import nn
 
+def weights_init_normal(m):
+    classname = m.__class__.__name__
+    if classname.find("Conv") != -1:
+        init.gauss_(m.weight, 0.0, 0.02)
+        init.gauss_(m.bias, 0.0, 0.02)
+    elif classname.find("BatchNorm") != -1:
+        init.gauss_(m.weight, 1.0, 0.02)
+        init.constant_(m.bias, 0.0)
+
 class UNetDown(nn.Module):
 
     def __init__(self, in_size, out_size, normalize=True, dropout=0.0):
@@ -49,6 +58,9 @@ class GeneratorUNet(nn.Module):
         self.up5 = UNetUp(256, 64)
         self.final = nn.Sequential(nn.Upsample(scale_factor=2), nn.ZeroPad2d((1, 0, 1, 0)), nn.Conv(128, channels, 4, padding=1), nn.Tanh())
 
+        for m in self.modules():
+            weights_init_normal(m)
+
     def execute(self, x):
         d1 = self.down1(x)
         d2 = self.down2(d1)
@@ -78,6 +90,9 @@ class Discriminator(nn.Module):
             layers.append(nn.LeakyReLU(0.2))
             return layers
         self.model = nn.Sequential(*discriminator_block(channels, 64, normalization=False), *discriminator_block(64, 128), *discriminator_block(128, 256), nn.ZeroPad2d((1, 0, 1, 0)), nn.Conv(256, 1, 4, padding=1))
+
+        for m in self.modules():
+            weights_init_normal(m)
 
     def execute(self, img):
         return self.model(img)

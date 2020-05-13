@@ -1,11 +1,3 @@
-"""Dataset setting and data loader for MNIST-M.
-
-Modified from
-https://github.com/pytorch/vision/blob/master/torchvision/datasets/mnist.py
-
-CREDIT: https://github.com/corenel
-"""
-
 from __future__ import print_function
 
 import errno

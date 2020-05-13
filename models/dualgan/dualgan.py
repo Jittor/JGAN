@@ -7,7 +7,6 @@ import scipy
 import sys
 import time
 import datetime
-from torchvision.utils import save_image
 from datasets import *
 from models import *
 from jittor import nn
@@ -52,9 +51,9 @@ D_A = Discriminator()
 D_B = Discriminator()
 
 # Configure data loader
-dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, img_shape).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
+dataloader = ImageDataset("../data/%s" % opt.dataset_name, img_shape).set_attrs(batch_size=opt.batch_size, shuffle=True, num_workers=opt.n_cpu)
 
-val_dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, img_shape, mode="val").set_attrs(batch_size=16, shuffle=True, num_workers=1)
+val_dataloader = ImageDataset("../data/%s" % opt.dataset_name, img_shape, mode="val").set_attrs(batch_size=16, shuffle=True, num_workers=1)
 
 # Optimizers
 optimizer_G = nn.Adam(
@@ -87,6 +86,33 @@ def compute_gradient_penalty(D, real_samples, fake_samples):
     gradient_penalty = ((norm(gradients, 2, dim=1) - 1) ** 2).mean()
     return gradient_penalty
 
+import cv2
+
+def save_image(img, path, nrow=10, padding=5):
+    N,C,W,H = img.shape
+    if (N%nrow!=0):
+        print("N%nrow!=0")
+        return
+    ncol=int(N/nrow)
+    img_all = []
+    for i in range(ncol):
+        img_ = []
+        for j in range(nrow):
+            img_.append(img[i*nrow+j])
+            img_.append(np.zeros((C,W,padding)))
+        img_all.append(np.concatenate(img_, 2))
+        img_all.append(np.zeros((C,padding,img_all[0].shape[2])))
+    img = np.concatenate(img_all, 1)
+    img = np.concatenate([np.zeros((C,padding,img.shape[2])), img], 1)
+    img = np.concatenate([np.zeros((C,img.shape[1],padding)), img], 2)
+    min_=img.min()
+    max_=img.max()
+    img=(img-min_)/(max_-min_)*255
+    img=img.transpose((1,2,0))
+    if C==3:
+        img = img[:,:,::-1]
+    cv2.imwrite(path,img)
+
 def sample_images(batches_done):
     """Saves a generated sample from the validation set"""
     imgs = next(iter(val_dataloader))
@@ -97,7 +123,7 @@ def sample_images(batches_done):
     fake_A = G_BA(real_B)
     BA = jt.contrib.concat((real_B, fake_A), -2)
     img_sample = jt.contrib.concat((AB, BA), 0)
-    save_image(torch.Tensor(img_sample.numpy()), "images/%s/%s.png" % (opt.dataset_name, batches_done), nrow=8, normalize=True)
+    save_image(img_sample.numpy(), "images/%s/%s.png" % (opt.dataset_name, batches_done), nrow=8)
 
 # ----------
 #  Training

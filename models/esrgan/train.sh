@@ -1,1 +1,1 @@
-log_v=1 CUDA_VISIBLE_DEVICES=3 PYTHONPATH=~/workspace/github/jittor/python/ python3.7 esrgan.py
+python3.7 esrgan.py

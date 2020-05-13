@@ -2,7 +2,6 @@ import glob
 import random
 import os
 import numpy as np
-import torch
 from jittor.dataset.dataset import Dataset
 from PIL import Image
 import jittor.transform as transform

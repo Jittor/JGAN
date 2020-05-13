@@ -3,15 +3,9 @@ import os
 import numpy as np
 import math
 import itertools
-
-from torchvision.utils import save_image
-import torch
-
 import mnistm
-
 from jittor.dataset.mnist import MNIST
 import jittor.transform as transform
-
 import jittor as jt
 from jittor import init
 from jittor import nn
@@ -121,6 +115,33 @@ class Classifier(nn.Module):
         feature_repr = feature_repr.view((feature_repr.shape[0], (- 1)))
         label = self.output_layer(feature_repr)
         return label
+
+import cv2
+
+def save_image(img, path, nrow=10, padding=5):
+    N,C,W,H = img.shape
+    if (N%nrow!=0):
+        print("N%nrow!=0")
+        return
+    ncol=int(N/nrow)
+    img_all = []
+    for i in range(ncol):
+        img_ = []
+        for j in range(nrow):
+            img_.append(img[i*nrow+j])
+            img_.append(np.zeros((C,W,padding)))
+        img_all.append(np.concatenate(img_, 2))
+        img_all.append(np.zeros((C,padding,img_all[0].shape[2])))
+    img = np.concatenate(img_all, 1)
+    img = np.concatenate([np.zeros((C,padding,img.shape[2])), img], 1)
+    img = np.concatenate([np.zeros((C,img.shape[1],padding)), img], 2)
+    min_=img.min()
+    max_=img.max()
+    img=(img-min_)/(max_-min_)*255
+    img=img.transpose((1,2,0))
+    if C==3:
+        img = img[:,:,::-1]
+    cv2.imwrite(path,img)
 
 # Loss function
 adversarial_loss = nn.MSELoss()
@@ -238,4 +259,4 @@ for epoch in range(opt.n_epochs):
         batches_done = len(dataloader_A) * epoch + i
         if batches_done % opt.sample_interval == 0:
             sample = jt.contrib.concat((imgs_A[:5], fake_B[:5], imgs_B[:5]), 2)
-            save_image(torch.Tensor(sample.numpy()), "images/%d.png" % batches_done, nrow=int(math.sqrt(batch_size)), normalize=True)
+            save_image(sample.numpy(), "images/%d.png" % batches_done, nrow=5)

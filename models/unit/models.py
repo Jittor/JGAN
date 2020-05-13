@@ -8,6 +8,7 @@ def weights_init_normal(m):
     classname = m.__class__.__name__
     if (classname.find('Conv') != (- 1)):
         init.gauss_(m.weight, mean=0.0, std=0.02)
+        init.gauss_(m.bias, mean=0.0, std=0.02)
     elif (classname.find('BatchNorm') != (- 1)):
         init.gauss_(m.weight, mean=1.0, std=0.02)
         init.constant_(m.bias, value=0.0)

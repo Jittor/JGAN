@@ -7,7 +7,6 @@ import itertools
 import sys
 import datetime
 import time
-from torchvision.utils import save_image
 from models import *
 from datasets import *
 from jittor import nn
@@ -49,11 +48,6 @@ G_BA = GeneratorUNet(input_shape)
 D_A = Discriminator(input_shape)
 D_B = Discriminator(input_shape)
 
-G_AB.load_parameters(torch.load('/home/storage/zwy/workspace/GAN/PyTorch-GAN/implementations/discogan/G_AB_init.pth'))
-G_BA.load_parameters(torch.load('/home/storage/zwy/workspace/GAN/PyTorch-GAN/implementations/discogan/G_BA_init.pth'))
-D_A.load_parameters(torch.load('/home/storage/zwy/workspace/GAN/PyTorch-GAN/implementations/discogan/D_A_init.pth'))
-D_B.load_parameters(torch.load('/home/storage/zwy/workspace/GAN/PyTorch-GAN/implementations/discogan/D_B_init.pth'))
-
 # Optimizers
 optimizer_G = nn.Adam(
     G_AB.parameters() + G_BA.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2)
@@ -62,11 +56,36 @@ optimizer_D_A = nn.Adam(D_A.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 optimizer_D_B = nn.Adam(D_B.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
 # Dataset loader
-dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, input_shape).set_attrs(batch_size=opt.batch_size, shuffle=False, num_workers=opt.n_cpu)
+dataloader = ImageDataset("../data/%s" % opt.dataset_name, input_shape).set_attrs(batch_size=opt.batch_size, shuffle=False, num_workers=opt.n_cpu)
 
-val_dataloader = ImageDataset("../../../PyTorch-GAN/data/%s" % opt.dataset_name, input_shape, mode="val").set_attrs(batch_size=16, shuffle=False, num_workers=opt.n_cpu)
+val_dataloader = ImageDataset("../data/%s" % opt.dataset_name, input_shape, mode="val").set_attrs(batch_size=16, shuffle=False, num_workers=opt.n_cpu)
 
-from pdb import set_trace as st
+import cv2
+def save_image(img, path, nrow=10, padding=5):
+    N,C,W,H = img.shape
+    if (N%nrow!=0):
+        print("N%nrow!=0")
+        return
+    ncol=int(N/nrow)
+    img_all = []
+    for i in range(ncol):
+        img_ = []
+        for j in range(nrow):
+            img_.append(img[i*nrow+j])
+            img_.append(np.zeros((C,W,padding)))
+        img_all.append(np.concatenate(img_, 2))
+        img_all.append(np.zeros((C,padding,img_all[0].shape[2])))
+    img = np.concatenate(img_all, 1)
+    img = np.concatenate([np.zeros((C,padding,img.shape[2])), img], 1)
+    img = np.concatenate([np.zeros((C,img.shape[1],padding)), img], 2)
+    min_=img.min()
+    max_=img.max()
+    img=(img-min_)/(max_-min_)*255
+    img=img.transpose((1,2,0))
+    if C==3:
+        img = img[:,:,::-1]
+    cv2.imwrite(path,img)
+    
 def sample_images(batches_done):
     """Saves a generated sample from the validation set"""
     imgs = next(iter(val_dataloader))
@@ -77,7 +96,7 @@ def sample_images(batches_done):
     real_B = imgs[1]
     fake_A = G_BA(real_B)
     img_sample = jt.contrib.concat((real_A, fake_B, real_B, fake_A), 0)
-    save_image(torch.Tensor(img_sample.numpy()), "images/%s/%s.png" % (opt.dataset_name, batches_done), nrow=8, normalize=True)
+    save_image(img_sample.numpy(), "images/%s/%s.png" % (opt.dataset_name, batches_done), nrow=8)
 
 # ----------
 #  Training
