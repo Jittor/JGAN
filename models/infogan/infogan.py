@@ -2,7 +2,6 @@ import argparse
 import os
 import numpy as np
 import math
-import itertools
 
 os.makedirs("images/static/", exist_ok=True)
 os.makedirs("images/varying_c1/", exist_ok=True)
@@ -27,6 +26,8 @@ print(opt)
 import jittor as jt
 from jittor import init
 from jittor import nn
+
+jt.flags.use_cuda = 1
 
 def weights_init_normal(m):
     classname = m.__class__.__name__
@@ -119,9 +120,7 @@ dataloader = MNIST(train=True, transform=transform).set_attrs(batch_size=opt.bat
 # Optimizers
 optimizer_G = nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-optimizer_info = nn.Adam(
-    itertools.chain(generator.parameters(), discriminator.parameters()), lr=opt.lr, betas=(opt.b1, opt.b2)
-)
+optimizer_info = nn.Adam(generator.parameters() + discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
 # Static generator inputs for sampling
 static_z = jt.array(np.zeros((opt.n_classes ** 2, opt.latent_dim))).float32()
@@ -217,8 +216,8 @@ for epoch in range(opt.n_epochs):
         d_real_loss = adversarial_loss(real_pred, valid)
 
         # Loss for fake images
-        fake_pred, _, _ = discriminator(gen_imgs.detach())
-        d_fake_loss = adversarial_loss(fake_pred, fake)
+        fake_pred, _, _ = discriminator(gen_imgs.stop_grad())
+        d_fake_loss = adversarial_loss(fake_pred, fake) 
 
         # Total discriminator loss
         d_loss = (d_real_loss + d_fake_loss) / 2
