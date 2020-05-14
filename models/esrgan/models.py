@@ -8,7 +8,11 @@ import math
 def weights_init_normal(m):
     classname = m.__class__.__name__
     if classname.find("Conv") != -1:
+        init.gauss_(m.weight, 0.0, 0.02)
         init.gauss_(m.bias, 0.0, 0.02)
+    elif classname.find("BatchNorm") != -1:
+        init.gauss_(m.weight, 1.0, 0.02)
+        init.constant_(m.bias, 0.0)
 
 class FeatureExtractor(nn.Module):
     def __init__(self):

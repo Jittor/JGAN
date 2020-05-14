@@ -260,6 +260,7 @@ We propose coupled generative adversarial network (CoGAN) for learning a joint d
 
 #### Run Example
 ```
+$ download mnistm.pkl from https://cloud.tsinghua.edu.cn/f/d9a411da271745fcbe1f/?dl=1 and put it into data/mnistm/mnistm.pkl
 $ cd models/cogan/
 $ python3.7 cogan.py
 ```
@@ -534,6 +535,7 @@ Collecting well-annotated image datasets to train modern machine learning algori
 Trains a classifier on images that have been translated from the source domain (MNIST) to the target domain (MNIST-M) using the annotations of the source domain images. The classification network is trained jointly with the generator network to optimize the generator for both providing a proper domain translation and also for preserving the semantics of the source domain image. The classification network trained on translated images is compared to the naive solution of training a classifier on MNIST and evaluating it on MNIST-M. The naive model manages a 55% classification accuracy on MNIST-M while the one trained during domain adaptation achieves a 95% classification accuracy.
 
 ```
+$ download mnistm.pkl from https://cloud.tsinghua.edu.cn/f/d9a411da271745fcbe1f/?dl=1 and put it into data/mnistm/mnistm.pkl
 $ cd models/pixelda/
 $ python3.7 pixelda.py
 ```  
