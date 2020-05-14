@@ -2,7 +2,6 @@ import argparse
 import os
 import numpy as np
 import math
-import itertools
 import mnistm
 from jittor.dataset.mnist import MNIST
 import jittor.transform as transform
@@ -167,7 +166,7 @@ dataloader_B = mnistm.MNISTM(mnist_root = "../../data/mnistm", train=True, trans
 
 # Optimizers
 optimizer_G = nn.Adam(
-    itertools.chain(generator.parameters(), classifier.parameters()), lr=opt.lr, betas=(opt.b1, opt.b2)
+    generator.parameters() + classifier.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2)
 )
 optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 

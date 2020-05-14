@@ -2,7 +2,6 @@ import argparse
 import os
 import numpy as np
 import math
-import itertools
 import scipy
 import sys
 import time
@@ -57,7 +56,7 @@ val_dataloader = ImageDataset("../data/%s" % opt.dataset_name, img_shape, mode="
 
 # Optimizers
 optimizer_G = nn.Adam(
-    itertools.chain(G_AB.parameters(), G_BA.parameters()), lr=opt.lr, betas=(opt.b1, opt.b2)
+    G_AB.parameters() + G_BA.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2)
 )
 optimizer_D_A = nn.Adam(D_A.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 optimizer_D_B = nn.Adam(D_B.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))

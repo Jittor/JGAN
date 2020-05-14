@@ -2,7 +2,6 @@ import argparse
 import os
 import numpy as np
 import time
-import itertools
 import cv2
 
 import jittor as jt
@@ -90,7 +89,7 @@ train_loader = MNIST(train=True, transform=transform).set_attrs(batch_size=opt.b
 
 # Optimizers
 optimizer_G = nn.Adam(
-    itertools.chain(encoder.parameters(), decoder.parameters()), lr=opt.lr, betas=(opt.b1, opt.b2)
+    encoder.parameters() + decoder.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2)
 )
 optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
