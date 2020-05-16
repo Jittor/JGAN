@@ -6,7 +6,9 @@ import os
 import numpy as np
 import math
 from jittor import nn
-jt.flags.use_cuda = 1
+
+if jt.has_cuda:
+    jt.flags.use_cuda = 1
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--n_epochs', type=int, default=100, help='number of epochs of training')
