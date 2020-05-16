@@ -77,10 +77,10 @@ dataloader = MNIST(train=True, transform=transform).set_attrs(batch_size=opt.bat
 optimizer_G = nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
-import cv2
 os.makedirs("images", exist_ok=True)
 os.makedirs("saved_models", exist_ok=True)
 
+from PIL import Image
 def save_image(img, path, nrow=10, padding=5):
     N,C,W,H = img.shape
     if (N%nrow!=0):
@@ -104,7 +104,9 @@ def save_image(img, path, nrow=10, padding=5):
     img=img.transpose((1,2,0))
     if C==3:
         img = img[:,:,::-1]
-    cv2.imwrite(path,img)
+    elif C==1:
+        img = img[:,:,0]
+    Image.fromarray(np.uint8(img)).save(path)
 
 def sample_image(n_row, batches_done):
     """Saves a grid of generated digits"""
