@@ -1,6 +1,6 @@
 ## Jittor-GAN
 
-Code based on a full [Pytorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
+Code based on [Pytorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
 
 ## Table of Contents
   * [Installation](#installation)
