@@ -2,6 +2,19 @@
 
 Code based on [Pytorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
 
+<p align="center">
+    <img src="assets/cite.png"\>
+</p>
+
+<p align="center">
+    <img src="assets/speedup.png"\>
+</p>
+
+<p align="center">
+    <img src="assets/100h.png"\>
+</p>
+
+
 ## Table of Contents
   * [Installation](#installation)
   * [models](#models)
