@@ -1,7 +1,6 @@
 ## Jittor-GAN
-Collection of Jittor models of Generative Adversarial Network varieties presented in research papers. Model architectures will not always mirror the ones proposed in the papers, but I have chosen to focus on getting the core ideas covered instead of getting every layer configuration right. Contributions and suggestions of GANs to implement are very welcomed.
 
-<b>See also:</b> [Keras-GAN](https://github.com/eriklindernoren/Keras-GAN) [Pytorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
+Code based on a full [Pytorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
 
 ## Table of Contents
   * [Installation](#installation)
@@ -143,8 +142,6 @@ _ClusterGAN: Latent Space Clustering in Generative Adversarial Networks_
 Sudipto Mukherjee, Himanshu Asnani, Eugene Lin, Sreeram Kannan
 
 [[Paper]](https://arxiv.org/abs/1809.03627) [[Code]](models/cluster_gan/clustergan.py)
-
-Code based on a full PyTorch [[implementation]](https://github.com/zhampel/clusterGAN).
 
 #### Run Example
 ```
