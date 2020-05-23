@@ -139,8 +139,6 @@ optimizer_D = nn.Adam(coupled_discriminators.parameters(), lr=opt.lr, betas=(opt
 # ----------
 #  Training
 # ----------
-from pdb import set_trace as st
-
 for epoch in range(opt.n_epochs):
     for i, ((imgs1, _), (imgs2, _)) in enumerate(zip(dataloader1, dataloader2)):
         jt.sync_all(True)

@@ -48,7 +48,6 @@ opt = parser.parse_args()
 print(opt)
 
 import cv2
-from pdb import set_trace as st
 def save_image(img, path, nrow=10, padding=5):
     N,C,W,H = img.shape
     if (N%nrow!=0):

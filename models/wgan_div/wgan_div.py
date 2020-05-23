@@ -3,7 +3,6 @@ import os
 import numpy as np
 import math
 import sys
-
 import jittor as jt
 from jittor import nn
 
@@ -142,8 +141,6 @@ for epoch in range(opt.n_epochs):
         real_validity = discriminator(real_imgs)
         # Fake images
         fake_validity = discriminator(fake_imgs)
-        from pdb import set_trace as st
-        # st()
         # Compute W-div gradient penalty
         real_grad = jt.grad(real_validity, real_imgs)
         real_grad_norm = real_grad.view(real_grad.size(0), -1).sqr().sum(1) ** (p / 2)
