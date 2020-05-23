@@ -176,7 +176,6 @@ def sample_image(n_row, batches_done):
 # ----------
 #  Training
 # ----------
-from pdb import set_trace as st
 for epoch in range(opt.n_epochs):
     for i, (imgs, labels) in enumerate(dataloader):
 

@@ -175,7 +175,6 @@ optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.
 # ----------
 
 # Keeps 100 accuracy measurements
-from pdb import set_trace as st
 task_performance = []
 target_performance = []
 
