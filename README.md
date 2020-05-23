@@ -2,13 +2,22 @@
 
 Code based on [Pytorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
 
+Our GAN model zoo supports 31 kinds of GAN.
+This table is the latest citations we found from Google Scholar.
+It can be seen that since GAN was proposed in 2014, a lot of excellent work based on GAN has appeared.
+These 31 GANs have a total of 66089 citations, with an average of 2132 citations per article.
+
 <p align="center">
     <img src="assets/cite.png"\>
 </p>
 
+We compared the performance of these GANs of Jittor and Pytorch. The picture below is the speedup ratio of Jittor relative to Pytorch. It can be seen that the highest acceleration ratio of these GANs reaches 154%, and the average acceleration ratio is 91%.
+
 <p align="center">
     <img src="assets/speedup.png"\>
 </p>
+
+In another form of presentation, assuming that Pytorch's training time is 100 hours, we calculated the time required for GAN training corresponding to Jittor. Of these GANs, our fastest accelerating GAN takes only 39 hours to run, with an average of 56 hours.
 
 <p align="center">
     <img src="assets/100h.png"\>
