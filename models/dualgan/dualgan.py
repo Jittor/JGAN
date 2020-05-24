@@ -130,7 +130,6 @@ def sample_images(batches_done):
 
 batches_done = 0
 prev_time = time.time()
-from pdb import set_trace as st
 for epoch in range(opt.n_epochs):
     for i, batch in enumerate(dataloader):
         jt.sync_all(True)
