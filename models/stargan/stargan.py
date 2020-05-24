@@ -23,12 +23,12 @@ import datetime
 import sys
 import cv2
 
-from jittor_models import *
-from jittor_datasets import *
+from models import *
+from datasets import *
 
 jt.flags.use_cuda = 1
 
-os.makedirs("jittor_images", exist_ok=True)
+os.makedirs("images", exist_ok=True)
 os.makedirs("saved_models", exist_ok=True)
 
 parser = argparse.ArgumentParser()
@@ -73,7 +73,6 @@ def save_image(img, path, nrow=10):
     max_=img.max()
     img=(img-min_)/(max_-min_)*255
     img=img.transpose((1,2,0))
-    print(img.shape)
     if C==3:
         # img = img[:,:,::-1]
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -160,7 +159,6 @@ def sample_images(batches_done):
     for i in range(10):
         img, label = val_imgs[i], val_labels[i]
         # Repeat for number of label changes
-        print(img.shape, label.shape)
         imgs = img.broadcast([c_dim, img.shape[0], img.shape[1], img.shape[2]],[0])
         labels = label.broadcast([c_dim, label.shape[0]],[0])
         # Make changes to labels
@@ -175,9 +173,12 @@ def sample_images(batches_done):
         img_sample = jt.array(np.concatenate([img.numpy(), gen_imgs], axis=-1))
         # Add as row to generated samples
         img_samples = img_sample if img_samples is None else jt.contrib.concat((img_samples, img_sample), -2)
-    print(img_samples.shape)
-    save_image(img_samples.view(1, *img_samples.shape).numpy(), "jittor_images/%s.png" % batches_done, nrow=1)
+    save_image(img_samples.view(1, *img_samples.shape).numpy(), "images/%s.png" % batches_done, nrow=1)
 
+warmup_times = -1
+run_times = 3000
+total_time = 0.
+cnt = 0
 
 # ----------
 #  Training
@@ -239,34 +240,47 @@ for epoch in range(opt.epoch, opt.n_epochs):
 
             optimizer_G.step(loss_G)
 
-            # --------------
-            #  Log Progress
-            # --------------
+            if warmup_times==-1:
+                # --------------
+                #  Log Progress
+                # --------------
 
-            # Determine approximate time left
-            batches_done = epoch * len(dataloader) + i
-            batches_left = opt.n_epochs * len(dataloader) - batches_done
-            time_left = datetime.timedelta(seconds=batches_left * (time.time() - start_time) / (batches_done + 1))
+                # Determine approximate time left
+                batches_done = epoch * len(dataloader) + i
+                batches_left = opt.n_epochs * len(dataloader) - batches_done
+                time_left = datetime.timedelta(seconds=batches_left * (time.time() - start_time) / (batches_done + 1))
 
-            # Print log
-            sys.stdout.write(
-                "\r[Epoch %d/%d] [Batch %d/%d] [D adv: %f, aux: %f] [G loss: %f, adv: %f, aux: %f, cycle: %f] ETA: %s"
-                % (
-                    epoch,
-                    opt.n_epochs,
-                    i,
-                    len(dataloader),
-                    loss_D_adv.numpy()[0],
-                    loss_D_cls.numpy()[0],
-                    loss_G.numpy()[0],
-                    loss_G_adv.numpy()[0],
-                    loss_G_cls.numpy()[0],
-                    loss_G_rec.numpy()[0],
-                    time_left,
+                # Print log
+                sys.stdout.write(
+                    "\r[Epoch %d/%d] [Batch %d/%d] [D adv: %f, aux: %f] [G loss: %f, adv: %f, aux: %f, cycle: %f] ETA: %s"
+                    % (
+                        epoch,
+                        opt.n_epochs,
+                        i,
+                        len(dataloader),
+                        loss_D_adv.numpy()[0],
+                        loss_D_cls.numpy()[0],
+                        loss_G.numpy()[0],
+                        loss_G_adv.numpy()[0],
+                        loss_G_cls.numpy()[0],
+                        loss_G_rec.numpy()[0],
+                        time_left,
+                    )
                 )
-            )
 
-            # If at sample interval sample and save image
-            if batches_done % opt.sample_interval == 0:
-                sample_images(batches_done)
+                # If at sample interval sample and save image
+                if batches_done % opt.sample_interval == 0:
+                    sample_images(batches_done)
+        if warmup_times!=-1:
+            jt.sync_all()
+            cnt += 1
+            print(cnt)
+            if cnt == warmup_times:
+                jt.sync_all(True)
+                sta = time.time()
+            if cnt > warmup_times + run_times:
+                jt.sync_all(True)
+                total_time = time.time() - sta
+                print(f"run {run_times} iters cost {total_time} seconds, and avg {total_time / run_times} one iter.")
+                exit(0)
 #TODO: Save model checkpoints

@@ -10,10 +10,11 @@ import numpy as np
 import math
 import sys
 import cv2
+import time
 
 jt.flags.use_cuda = 1
+os.makedirs('images', exist_ok=True)
 
-os.makedirs('jittor_images', exist_ok=True)
 parser = argparse.ArgumentParser()
 parser.add_argument('--n_epochs', type=int, default=200, help='number of epochs of training')
 parser.add_argument('--batch_size', type=int, default=64, help='size of the batches')
@@ -105,33 +106,70 @@ class Discriminator(nn.Module):
         validity = self.model(img_flat)
         return validity
 
+# Initialize generator and discriminator
 generator = Generator()
 discriminator = Discriminator()
+
+# Configure data loader
 transform = transform.Compose([
     transform.Resize(size=opt.img_size),
     transform.Gray(),
     transform.ImageNormalize(mean=[0.5], std=[0.5]),
 ])
 dataloader = MNIST(train=True, transform=transform).set_attrs(batch_size=opt.batch_size, shuffle=True)
-#TODO:RMSprop
+
+# Optimizers
 optimizer_G = jt.nn.RMSprop(generator.parameters(), lr=opt.lr)
 optimizer_D = jt.nn.RMSprop(discriminator.parameters(), lr=opt.lr)
 batches_done = 0
 
+warmup_times = 300
+run_times = 3000
+total_time = 0.
+cnt = 0
+
+# ----------
+#  Training
+# ----------
+
 for epoch in range(opt.n_epochs):
     for (i, (real_imgs, _)) in enumerate(dataloader):
+        # -----------------
+        #  Train Discriminator
+        # -----------------
+
         z = jt.array(np.random.normal(0, 1, (real_imgs.shape[0], opt.latent_dim)).astype(np.float32))
         fake_imgs = generator(z).detach()
         loss_D = ((- jt.mean(discriminator(real_imgs))) + jt.mean(discriminator(fake_imgs)))
         optimizer_D.step(loss_D)
         for p in discriminator.parameters():
             clamp_(p, - opt.clip_value, opt.clip_value)
+        
+        # ---------------------
+        #  Train Generator
+        # ---------------------
 
         if ((i % opt.n_critic) == 0):
             gen_imgs = generator(z)
             loss_G = (- jt.mean(discriminator(gen_imgs)))
             optimizer_G.step(loss_G)
-            print(('[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]' % (epoch, opt.n_epochs, (batches_done % len(dataloader)), len(dataloader), loss_D.numpy()[0], loss_G.numpy()[0])))
-        if ((batches_done % opt.sample_interval) == 0):
-            save_image(gen_imgs.data[:25], ('jittor_images/%d.png' % batches_done), nrow=5)
-        batches_done += 1
+            if warmup_times==-1:
+                print(('[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]' % (epoch, opt.n_epochs, (batches_done % len(dataloader)), len(dataloader), loss_D.numpy()[0], loss_G.numpy()[0])))
+
+        if warmup_times==-1:
+            if ((batches_done % opt.sample_interval) == 0):
+                save_image(gen_imgs.data[:25], ('images/%d.png' % batches_done), nrow=5)
+            batches_done += 1
+        else:
+            jt.sync_all()
+            cnt += 1
+            print(cnt)
+            if cnt == warmup_times:
+                jt.sync_all(True)
+                sta = time.time()
+            if cnt > warmup_times + run_times:
+                jt.sync_all(True)
+                total_time = time.time() - sta
+                print(f"run {run_times} iters cost {total_time} seconds, and avg {total_time / run_times} one iter.")
+                exit(0)
+
