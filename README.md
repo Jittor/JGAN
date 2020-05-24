@@ -80,7 +80,7 @@ $ python3.7 acgan.py
 ```
 
 <p align="center">
-    <img src="assets/acgan.gif" width="200"\>
+    <img src="assets/acgan.png" width="200"\>
 </p>
 
 ### Adversarial Autoencoder
@@ -157,7 +157,16 @@ $ cd models/bgan/
 $ python3.7 bgan.py
 ```
 
+<p align="center">
+
+```
+<img src="assets/bgan.png" width="240"\>
+```
+
+</p>
+
 ### Cluster GAN
+
 _ClusterGAN: Latent Space Clustering in Generative Adversarial Networks_
 
 #### Authors
@@ -172,7 +181,7 @@ $ python3.7 clustergan.py
 ```
 
 <p align="center">
-    <img src="assets/cluster_gan.gif" width="200"\>
+    <img src="assets/cluster_gan.png" width="200"\>
 </p>
 
 
@@ -193,20 +202,6 @@ $ python3.7 cgan.py
 <p align="center">
     <img src="assets/cgan.gif" width="200"\>
 </p>
-
-### Context-Conditional GAN
-_Semi-Supervised Learning with Context-Conditional Generative Adversarial Networks_
-
-#### Authors
-Emily Denton, Sam Gross, Rob Fergus
-
-[[Paper]](https://arxiv.org/abs/1611.06430) [[Code]](models/ccgan/ccgan.py)
-
-#### Run Example
-```
-$ cd models/ccgan/
-$ python3.7 ccgan.py
-```
 
 ### Context Encoder
 _Context Encoders: Feature Learning by Inpainting_
@@ -290,7 +285,7 @@ $ python3.7 dcgan.py
 ```
 
 <p align="center">
-    <img src="assets/dcgan.gif" width="240"\>
+    <img src="assets/dcgan.png" width="240"\>
 </p>
 
 ### DiscoGAN
@@ -332,7 +327,16 @@ $ cd models/dragan/
 $ python3.7 dragan.py
 ```
 
+<p align="center">
+
+```
+<img src="assets/dragan.png" width="240"\>
+```
+
+</p>
+
 ### DualGAN
+
 _DualGAN: Unsupervised Dual Learning for Image-to-Image Translation_
 
 #### Authors
@@ -368,6 +372,7 @@ $ python3.7 ebgan.py
 ```
 
 ### Enhanced Super-Resolution GAN
+
 _ESRGAN: Enhanced Super-Resolution Generative Adversarial Networks_
 
 #### Authors
@@ -402,7 +407,7 @@ $ python3.7 gan.py
 ```
 
 <p align="center">
-    <img src="assets/gan.gif" width="240"\>
+    <img src="assets/gan.png" width="240"\>
 </p>
 
 ### InfoGAN
@@ -439,7 +444,16 @@ $ cd models/lsgan/
 $ python3.7 lsgan.py
 ```
 
+<p align="center">
+
+```
+<img src="assets/lsgan.png" width="200"\>
+```
+
+</p>
+
 ### Pix2Pix
+
 _Unpaired Image-to-Image Translation with Conditional Adversarial Networks_
 
 #### Authors
@@ -460,9 +474,6 @@ $ python3.7 pix2pix.py --dataset_name facades
 ```
 
 <p align="center">
-    <img src="assets/pix2pix.png" width="200"\>
-</p>
-<p align="center">
     Rows from top to bottom: (1) The condition for the generator (2) Generated image <br>
     based of condition (3) The true corresponding image to the condition
 </p>
@@ -482,7 +493,7 @@ Trains a classifier on images that have been translated from the source domain (
 $ download mnistm.pkl from https://cloud.tsinghua.edu.cn/f/d9a411da271745fcbe1f/?dl=1 and put it into data/mnistm/mnistm.pkl
 $ cd models/pixelda/
 $ python3.7 pixelda.py
-```  
+```
 
 <p align="center">
     <img src="assets/pixelda.gif" width="200"\>
@@ -507,7 +518,16 @@ $ python3.7 relativistic_gan.py                 # Relativistic Standard GAN
 $ python3.7 relativistic_gan.py --rel_avg_gan   # Relativistic Average GAN
 ```
 
+<p align="center">
+
+```
+<img src="assets/relativistic_gan.png" width="240"\>
+```
+
+</p>
+
 ### Semi-Supervised GAN
+
 _Semi-Supervised Generative Adversarial Network_
 
 #### Authors
@@ -535,7 +555,16 @@ $ cd models/softmax_gan/
 $ python3.7 softmax_gan.py
 ```
 
+<p align="center">
+
+```
+<img src="assets/softmax_gan.png" width="240"\>
+```
+
+</p>
+
 ### StarGAN
+
 _StarGAN: Unified Generative Adversarial Networks for Multi-Domain Image-to-Image Translation_
 
 #### Authors
@@ -550,9 +579,6 @@ $ cd models/stargan/
 $ python3.7 stargan.py
 ```
 
-<p align="center">
-    <img src="assets/stargan.png" width="640"\>
-</p>
 <p align="center">
     Original | Black Hair | Blonde Hair | Brown Hair | Gender Flip | Aged
 </p>
@@ -602,7 +628,16 @@ $ cd models/wgan/
 $ python3.7 wgan.py
 ```
 
+<p align="center">
+
+```
+<img src="assets/wgan.png" width="240"\>
+```
+
+</p>
+
 ### Wasserstein GAN GP
+
 _Improved Training of Wasserstein GANs_
 
 #### Authors
@@ -615,10 +650,6 @@ Ishaan Gulrajani, Faruk Ahmed, Martin Arjovsky, Vincent Dumoulin, Aaron Courvill
 $ cd models/wgan_gp/
 $ python3.7 wgan_gp.py
 ```
-
-<p align="center">
-    <img src="assets/wgan_gp.gif" width="240"\>
-</p>
 
 ### Wasserstein GAN DIV
 _Wasserstein Divergence for GANs_

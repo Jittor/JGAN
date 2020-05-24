@@ -139,7 +139,7 @@ def compute_gradient_penalty(D, real_samples, fake_samples):
     return gp
 
 batches_done = 0
-warmup_times = 300
+warmup_times = -1
 run_times = 3000
 total_time = 0.
 cnt = 0
