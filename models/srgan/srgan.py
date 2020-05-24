@@ -17,7 +17,6 @@ import sys
 from models import *
 from datasets import *
 import jittor as jt
-from pdb import set_trace as st
 jt.flags.use_cuda = 1
 
 os.makedirs("images", exist_ok=True)
