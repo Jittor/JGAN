@@ -8,6 +8,11 @@ from jittor.dataset.mnist import MNIST
 import jittor.transform as transform
 from jittor import nn
 import cv2
+import time
+
+jt.flags.use_cuda = 1
+os.makedirs("images", exist_ok=True)
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--n_epochs", type=int, default=200, help="number of epochs of training")
 parser.add_argument("--batch_size", type=int, default=64, help="size of the batches")
@@ -21,14 +26,14 @@ parser.add_argument("--channels", type=int, default=1, help="number of image cha
 parser.add_argument("--sample_interval", type=int, default=400, help="number of image channels")
 opt = parser.parse_args()
 
+# Configure data loader
 transforms = transform.Compose([
     transform.Resize(opt.img_size),
     transform.Gray(),
     transform.ImageNormalize(mean=[0.5],std=[0.5]),
 ])
 dataloader = MNIST(train=True,transform=transforms).set_attrs(batch_size=opt.batch_size,shuffle=True)
-os.makedirs("images",exist_ok=True)
-jt.flags.use_cuda = 1
+
 def save_image(img, path, nrow=10):
     N,C,W,H = img.shape
     img2=img.reshape([-1,W*nrow*nrow,H])
@@ -142,9 +147,7 @@ pixelwise_loss = nn.MSELoss()
 generator = Generator()
 discriminator = Discriminator()
 
-#generator.apply(weights_init_normal)
-#discriminator.apply(weights_init_normal)
-
+# Optimizers
 optimizer_G = nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
@@ -156,6 +159,10 @@ def pullaway_loss(embeddings):
     loss_pt = (jt.sum(similarity) - batch_size) / (batch_size * (batch_size - 1))
     return loss_pt
 
+warmup_times = 300
+run_times = 3000
+total_time = 0.
+cnt = 0
 
 # ----------
 #  Training
@@ -166,12 +173,13 @@ lambda_pt = 0.1
 margin = max(1, opt.batch_size / 64.0)
 for epoch in range(opt.n_epochs):
     for i, (imgs, _) in enumerate(dataloader):
-
         # Configure input
         real_imgs = jt.array(imgs).float32()
+
         # -----------------
         #  Train Generator
         # -----------------
+
         # Sample noise as generator input
         z = jt.array((np.random.normal(0, 1, (imgs.shape[0], opt.latent_dim))).astype('float32'))
 
@@ -183,6 +191,7 @@ for epoch in range(opt.n_epochs):
         g_loss = pixelwise_loss(recon_imgs, gen_imgs.detach()) + lambda_pt * pullaway_loss(img_embeddings)
         g_loss.sync()
         optimizer_G.step(g_loss)
+
         # ---------------------
         #  Train Discriminator
         # ---------------------
@@ -194,19 +203,34 @@ for epoch in range(opt.n_epochs):
         d_loss_fake = pixelwise_loss(fake_recon, gen_imgs.detach())
 
         d_loss = d_loss_real
+        # TODO: remove .data
         if (margin - d_loss_fake.data).item() > 0:
             d_loss += margin - d_loss_fake
         d_loss.sync()
         optimizer_D.step(d_loss)
-        # --------------
-        # Log Progress
-        # --------------
 
-        print(
-            "[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]"
-            % (epoch, opt.n_epochs, i, len(dataloader), d_loss.data, g_loss.data)
-        )
+        if warmup_times==-1:
+            # --------------
+            # Log Progress
+            # --------------
 
-        batches_done = epoch * len(dataloader) + i
-        if batches_done % opt.sample_interval == 0:
-            save_image(gen_imgs.data[:25], "images/%d.png" % batches_done, nrow=5)
+            print(
+                "[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]"
+                % (epoch, opt.n_epochs, i, len(dataloader), d_loss.data, g_loss.data)
+            )
+
+            batches_done = epoch * len(dataloader) + i
+            if batches_done % opt.sample_interval == 0:
+                save_image(gen_imgs.data[:25], "images/%d.png" % batches_done, nrow=5)
+        else:
+            jt.sync_all()
+            cnt += 1
+            print(cnt)
+            if cnt == warmup_times:
+                jt.sync_all(True)
+                sta = time.time()
+            if cnt > warmup_times + run_times:
+                jt.sync_all(True)
+                total_time = time.time() - sta
+                print(f"run {run_times} iters cost {total_time} seconds, and avg {total_time / run_times} one iter.")
+                exit(0)

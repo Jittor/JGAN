@@ -9,10 +9,10 @@ import os
 import numpy as np
 import math
 import cv2
-import ipdb
+import time
 
-os.makedirs('jittor_images', exist_ok=True)
 jt.flags.use_cuda = 1
+os.makedirs('images', exist_ok=True)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--n_epochs', type=int, default=200, help='number of epochs of training')
@@ -97,17 +97,23 @@ class Discriminator(nn.Module):
         out = out.view((out.shape[0], (- 1)))
         validity = self.adv_layer(out)
         return validity
+
 adversarial_loss = BCELoss()
 lambda_gp = 10
+
+# Initialize generator and discriminator
 generator = Generator()
 discriminator = Discriminator()
 
+# Configure data loader
 transform = transform.Compose([
     transform.Resize(size=opt.img_size),
     transform.Gray(),
     transform.ImageNormalize(mean=[0.5], std=[0.5]),
 ])
 dataloader = MNIST(train=True, transform=transform).set_attrs(batch_size=opt.batch_size, shuffle=True)
+
+# Optimizers
 optimizer_G = jt.nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 optimizer_D = jt.nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
@@ -128,32 +134,54 @@ def compute_gradient_penalty(D, X):
     d_interpolates = D(interpolates)
     gradients = jt.grad(d_interpolates, interpolates)
     gradient_penalty = (lambda_gp * ((norm(gradients, 2, dim=1) - 1).sqr()).mean())
-    if (np.isnan(jt.grad(gradient_penalty, X).mean().numpy())):
-        ipdb.set_trace()
     return gradient_penalty
+
+warmup_times = 300
+run_times = 3000
+total_time = 0.
+cnt = 0
+
+# ----------
+#  Training
+# ----------
 
 for epoch in range(opt.n_epochs):
     for (i, (real_imgs, _)) in enumerate(dataloader):
         valid = jt.ones([real_imgs.shape[0], 1]).stop_grad()
         fake = jt.zeros([real_imgs.shape[0], 1]).stop_grad()
+
+        # -----------------
+        #  Train Generator
+        # -----------------
         
         z = jt.array(np.random.normal(0, 1, (real_imgs.shape[0], opt.latent_dim)).astype(np.float32))
         gen_imgs = generator(z)
         g_loss = adversarial_loss(discriminator(gen_imgs), valid)
         optimizer_G.step(g_loss)
         
+        # ---------------------
+        #  Train Discriminator
+        # ---------------------
+        
         real_loss = adversarial_loss(discriminator(real_imgs), valid)
         fake_loss = adversarial_loss(discriminator(gen_imgs.detach()), fake)
         gradient_penalty = compute_gradient_penalty(discriminator, real_imgs)
         d_loss = (real_loss + fake_loss) / 2 + gradient_penalty
-        ps = optimizer_D.parameters
-        gs = jt.grad(d_loss, ps)
-        if (np.isnan(gs[0].mean().numpy())):
-            ipdb.set_trace()
-        if (np.isnan(d_loss.numpy())):
-            ipdb.set_trace()
         optimizer_D.step(d_loss)
-        print(('[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]' % (epoch, opt.n_epochs, i, len(dataloader), d_loss.numpy()[0], g_loss.numpy()[0])))
-        if (np.isnan(d_loss.numpy())):
-            break
-    save_image(gen_imgs.data, ('jittor_images/%d.png' % epoch), nrow=int(math.sqrt(opt.batch_size)))
+        
+        if warmup_times==-1:
+            print(('[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]' % (epoch, opt.n_epochs, i, len(dataloader), d_loss.numpy()[0], g_loss.numpy()[0])))
+        else:            
+            jt.sync_all()
+            cnt += 1
+            print(cnt)
+            if cnt == warmup_times:
+                jt.sync_all(True)
+                sta = time.time()
+            if cnt > warmup_times + run_times:
+                jt.sync_all(True)
+                total_time = time.time() - sta
+                print(f"run {run_times} iters cost {total_time} seconds, and avg {total_time / run_times} one iter.")
+                exit(0)
+    if warmup_times==-1:
+        save_image(gen_imgs.data, ('images/%d.png' % epoch), nrow=int(math.sqrt(opt.batch_size)))
