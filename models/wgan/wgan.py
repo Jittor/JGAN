@@ -85,7 +85,7 @@ class Generator(nn.Module):
         def block(in_feat, out_feat, normalize=True):
             layers = [nn.Linear(in_feat, out_feat)]
             if normalize:
-                layers.append(BatchNorm1d(out_feat, 0.8))
+                layers.append(nn.BatchNorm1d(out_feat, 0.8))
             layers.append(nn.LeakyReLU(scale=0.2))
             return layers
         self.model = nn.Sequential(*block(opt.latent_dim, 128, normalize=False), *block(128, 256), *block(256, 512), *block(512, 1024), nn.Linear(1024, int(np.prod(img_shape))), nn.Tanh())
@@ -119,11 +119,11 @@ transform = transform.Compose([
 dataloader = MNIST(train=True, transform=transform).set_attrs(batch_size=opt.batch_size, shuffle=True)
 
 # Optimizers
-optimizer_G = jt.nn.RMSprop(generator.parameters(), lr=opt.lr)
-optimizer_D = jt.nn.RMSprop(discriminator.parameters(), lr=opt.lr)
+optimizer_G = jt.optim.RMSprop(generator.parameters(), lr=opt.lr)
+optimizer_D = jt.optim.RMSprop(discriminator.parameters(), lr=opt.lr)
 batches_done = 0
 
-warmup_times = 300
+warmup_times = -1
 run_times = 3000
 total_time = 0.
 cnt = 0

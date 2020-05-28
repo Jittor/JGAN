@@ -23,7 +23,7 @@ jt.flags.use_cuda = 1
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--epoch", type=int, default=0, help="epoch to start training from")
-parser.add_argument("--n_epochs", type=int, default=200, help="number of epochs of training")
+parser.add_argument("--n_epochs", type=int, default=2000, help="number of epochs of training")
 parser.add_argument("--dataset_name", type=str, default="facades", help="name of the dataset")
 parser.add_argument("--batch_size", type=int, default=1, help="size of the batches")
 parser.add_argument("--lr", type=float, default=0.0002, help="adam: learning rate")
@@ -37,14 +37,14 @@ parser.add_argument("--channels", type=int, default=3, help="number of image cha
 parser.add_argument(
     "--sample_interval", type=int, default=500, help="interval between sampling of images from generators"
 )
-parser.add_argument("--checkpoint_interval", type=int, default=-1, help="interval between model checkpoints")
+parser.add_argument("--checkpoint_interval", type=int, default=1, help="interval between model checkpoints")
 opt = parser.parse_args()
 print(opt)
 
 def save_image(img, path, nrow=10):
     N,C,W,H = img.shape
     if (N%nrow!=0):
-        print("N%nrow!=0")
+        print("save_image error: N%nrow!=0")
         return
     img=img.transpose((1,0,2,3))
     ncol=int(N/nrow)
@@ -64,8 +64,8 @@ os.makedirs("images/%s" % opt.dataset_name, exist_ok=True)
 os.makedirs("saved_models/%s" % opt.dataset_name, exist_ok=True)
 
 # Loss functions
-criterion_GAN = MSELoss()
-criterion_pixelwise = L1Loss()
+criterion_GAN = nn.MSELoss()
+criterion_pixelwise = nn.L1Loss()
 
 # Loss weight of L1 pixel-wise loss between translated image and real image
 lambda_pixel = 100
@@ -77,21 +77,26 @@ patch = (1, opt.img_height // 2 ** 4, opt.img_width // 2 ** 4)
 generator = GeneratorUNet()
 discriminator = Discriminator()
 
+if opt.epoch != 0:
+    # Load pretrained models
+    generator.load("saved_models/%s/generator_last.pkl" % (opt.dataset_name))
+    discriminator.load("saved_models/%s/discriminator_last.pkl" % (opt.dataset_name))
+
 # Optimizers
-optimizer_G = jt.nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-optimizer_D = jt.nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+optimizer_G = jt.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+optimizer_D = jt.optim.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
 # Configure dataloaders
 transforms_ = [
     transform.Resize(size=(opt.img_height, opt.img_width), mode=Image.BICUBIC),
     transform.ImageNormalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
 ]
-dataloader = ImageDataset("../data/%s" % opt.dataset_name, transforms_=transforms_).set_attrs(
+dataloader = ImageDataset("../../data/%s" % opt.dataset_name, transforms_=transforms_).set_attrs(
     batch_size=opt.batch_size,
     shuffle=True,
     num_workers=opt.n_cpu,
 )
-val_dataloader = ImageDataset("../data/%s" % opt.dataset_name, transforms_=transforms_, mode="val").set_attrs(
+val_dataloader = ImageDataset("../../data/%s" % opt.dataset_name, transforms_=transforms_, mode="val").set_attrs(
     batch_size=10,
     shuffle=True,
     num_workers=1,
@@ -104,7 +109,7 @@ def sample_images(batches_done):
     img_sample = np.concatenate([real_A.data, fake_B.data, real_B.data], -2)
     save_image(img_sample, "images/%s/%s.png" % (opt.dataset_name, batches_done), nrow=5)
 
-warmup_times = 300
+warmup_times = -1
 run_times = 3000
 total_time = 0.
 cnt = 0
@@ -159,20 +164,22 @@ for epoch in range(opt.epoch, opt.n_epochs):
             prev_time = time.time()
 
             # Print log
-            sys.stdout.write(
-                "\r[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f, pixel: %f, adv: %f] ETA: %s"
-                % (
-                    epoch,
-                    opt.n_epochs,
-                    i,
-                    len(dataloader),
-                    loss_D.numpy()[0],
-                    loss_G.numpy()[0],
-                    loss_pixel.numpy()[0],
-                    loss_GAN.numpy()[0],
-                    time_left,
+            jt.sync_all()
+            if batches_done % 5 == 0:
+                sys.stdout.write(
+                    "\r[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f, pixel: %f, adv: %f] ETA: %s"
+                    % (
+                        epoch,
+                        opt.n_epochs,
+                        i,
+                        len(dataloader),
+                        loss_D.numpy()[0],
+                        loss_G.numpy()[0],
+                        loss_pixel.numpy()[0],
+                        loss_GAN.numpy()[0],
+                        time_left,
+                    )
                 )
-            )
 
             # If at sample interval save image
             if batches_done % opt.sample_interval == 0:
@@ -189,4 +196,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
                 total_time = time.time() - sta
                 print(f"run {run_times} iters cost {total_time} seconds, and avg {total_time / run_times} one iter.")
                 exit(0)
-#TODO: save model
+    if opt.checkpoint_interval != -1 and epoch % opt.checkpoint_interval == 0:
+        # Save model checkpoints
+        generator.save(os.path.join(f"saved_models/{opt.dataset_name}/generator_last.pkl"))
+        discriminator.save(os.path.join(f"saved_models/{opt.dataset_name}/discriminator_last.pkl"))

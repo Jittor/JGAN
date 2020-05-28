@@ -48,52 +48,19 @@ def save_image(img, path):
     img=img.transpose((1,2,0))
     cv2.imwrite(path,img)
 
-def mul(a, b):
-    return a*b
-
-class Upsample(nn.Module):
-    def __init__(self, scale_factor=None, mode='nearest'):
-        self.scale_factor = scale_factor if isinstance(scale_factor, tuple) else (scale_factor, scale_factor)
-        self.mode = mode
-    
-    def execute(self, x):
-        return nn.resize(x, size=(x.shape[2]*self.scale_factor[0], x.shape[3]*self.scale_factor[1]), mode=self.mode)
-
-class Embedding(nn.Module):
-    def __init__(self, num, dim):
-        self.num = num
-        self.dim = dim
-        self.weight = jt.init.gauss([num,dim],'float32').stop_grad()
-    
-    def execute(self, x):
-        res = self.weight[x].reshape([x.shape[0],self.dim])
-        return res
-
-class BCELoss(nn.Module):
-    def __init__(self):
-        pass
-    def execute(self, output, target):
-        return - (target * jt.log(jt.maximum(output, 1e-20)) + (1 - target) * jt.log(jt.maximum(1 - output, 1e-20))).mean()
-
-class CrossEntropyLoss(nn.Module):
-    def __init__(self):
-        pass
-    def execute(self, output, target):
-        return nn.cross_entropy_loss(output, target)
-
 class Generator(nn.Module):
     def __init__(self):
         super(Generator, self).__init__()
-        self.label_emb = Embedding(opt.n_classes, opt.latent_dim)
+        self.label_emb = nn.Embedding(opt.n_classes, opt.latent_dim)
         self.init_size = (opt.img_size // 4)
         self.l1 = nn.Sequential(nn.Linear(opt.latent_dim, (128 * (self.init_size ** 2))))
         self.conv_blocks = nn.Sequential(
             nn.BatchNorm(128), 
-            Upsample(scale_factor=2), 
+            nn.Upsample(scale_factor=2), 
             nn.Conv(128, 128, 3, stride=1, padding=1), 
             nn.BatchNorm(128, 0.8), 
             nn.Leaky_relu(0.2),
-            Upsample(scale_factor=2), 
+            nn.Upsample(scale_factor=2), 
             nn.Conv(128, 64, 3, stride=1, padding=1), 
             nn.BatchNorm(64, 0.8), 
             nn.Leaky_relu(0.2),
@@ -105,7 +72,7 @@ class Generator(nn.Module):
 
     def execute(self, noise, labels):
         ebd = self.label_emb(labels)
-        gen_input = mul(ebd, noise)
+        gen_input = ebd*noise
         out = self.l1(gen_input)
         out = jt.reshape(out, [out.shape[0], 128, self.init_size, self.init_size])
         img = self.conv_blocks(out)
@@ -138,8 +105,8 @@ class Discriminator(nn.Module):
         label = self.aux_layer(out)
         return (validity, label)
 
-adversarial_loss = BCELoss()
-auxiliary_loss = CrossEntropyLoss()
+adversarial_loss = nn.BCELoss()
+auxiliary_loss = nn.CrossEntropyLoss()
 
 # Initialize generator and discriminator
 generator = Generator()
@@ -154,8 +121,8 @@ transform = transform.Compose([
 dataloader = MNIST(train=True, transform=transform).set_attrs(batch_size=opt.batch_size, shuffle=True)
 
 # Optimizers
-optimizer_G = jt.nn.Adam(generator.parameters(), opt.lr, betas=(opt.b1, opt.b2))
-optimizer_D = jt.nn.Adam(discriminator.parameters(), opt.lr, betas=(opt.b1, opt.b2))
+optimizer_G = jt.optim.Adam(generator.parameters(), opt.lr, betas=(opt.b1, opt.b2))
+optimizer_D = jt.optim.Adam(discriminator.parameters(), opt.lr, betas=(opt.b1, opt.b2))
 
 def sample_image(n_row, batches_done):
     'Saves a grid of generated digits ranging from 0 to n_classes'
@@ -166,7 +133,7 @@ def sample_image(n_row, batches_done):
     gen_imgs = gen_imgs.tanh()
     save_image(gen_imgs.numpy(), ('images/%d.png' % batches_done))
 
-warmup_times = 300
+warmup_times = -1
 run_times = 3000
 total_time = 0.
 cnt = 0

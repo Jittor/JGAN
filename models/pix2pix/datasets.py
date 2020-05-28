@@ -12,8 +12,6 @@ class ImageDataset(Dataset):
         super().__init__()
         self.transform = transform.Compose(transforms_)
         self.files = sorted(glob.glob(os.path.join(root, mode) + "/*.*"))
-        # if mode == "train":
-        #     self.files.extend(sorted(glob.glob(os.path.join(root, "test") + "/*.*")))
         self.set_attrs(total_len=len(self.files))
 
     def __getitem__(self, index):
@@ -30,4 +28,4 @@ class ImageDataset(Dataset):
         img_A = self.transform(img_A)
         img_B = self.transform(img_B)
 
-        return img_A, img_B#{"A": img_A, "B": img_B}
+        return img_A, img_B
