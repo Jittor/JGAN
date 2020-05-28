@@ -47,27 +47,13 @@ def weights_init_normal(m):
         jt.init.gauss_(m.weight, 1.0, 0.02)
         jt.init.constant_(m.bias, 0.0)
 
-class BCELoss(nn.Module):
-    def __init__(self):
-        pass
-    def execute(self, output, target):
-        return - (target * jt.log(jt.maximum(output, 1e-20)) + (1 - target) * jt.log(jt.maximum(1 - output, 1e-20))).mean()
-        
-class Upsample(nn.Module):
-    def __init__(self, scale_factor=None, mode='nearest'):
-        self.scale_factor = scale_factor if isinstance(scale_factor, tuple) else (scale_factor, scale_factor)
-        self.mode = mode
-    
-    def execute(self, x):
-        return nn.resize(x, size=(x.shape[2]*self.scale_factor[0], x.shape[3]*self.scale_factor[1]), mode=self.mode)
-
 class Generator(nn.Module):
 
     def __init__(self):
         super(Generator, self).__init__()
         self.init_size = (opt.img_size // 4)
         self.l1 = nn.Sequential(nn.Linear(opt.latent_dim, (128 * (self.init_size ** 2))))
-        self.conv_blocks = nn.Sequential(nn.BatchNorm(128), Upsample(scale_factor=2), nn.Conv(128, 128, 3, stride=1, padding=1), nn.BatchNorm(128, eps=0.8), nn.LeakyReLU(scale=0.2), Upsample(scale_factor=2), nn.Conv(128, 64, 3, stride=1, padding=1), nn.BatchNorm(64, eps=0.8), nn.LeakyReLU(scale=0.2), nn.Conv(64, opt.channels, 3, stride=1, padding=1), nn.Tanh())
+        self.conv_blocks = nn.Sequential(nn.BatchNorm(128), nn.Upsample(scale_factor=2), nn.Conv(128, 128, 3, stride=1, padding=1), nn.BatchNorm(128, eps=0.8), nn.LeakyReLU(scale=0.2), nn.Upsample(scale_factor=2), nn.Conv(128, 64, 3, stride=1, padding=1), nn.BatchNorm(64, eps=0.8), nn.LeakyReLU(scale=0.2), nn.Conv(64, opt.channels, 3, stride=1, padding=1), nn.Tanh())
         for m in self.conv_blocks:
             weights_init_normal(m)
 
@@ -99,7 +85,7 @@ class Discriminator(nn.Module):
         validity = self.adv_layer(out)
         return validity
 
-adversarial_loss = BCELoss()
+adversarial_loss = nn.BCELoss()
 
 # Initialize generator and discriminator
 generator = Generator()
@@ -114,10 +100,10 @@ transform = transform.Compose([
 dataloader = MNIST(train=True, transform=transform).set_attrs(batch_size=opt.batch_size, shuffle=True)
 
 # Optimizers
-optimizer_G = jt.nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-optimizer_D = jt.nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+optimizer_G = jt.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+optimizer_D = jt.optim.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
-warmup_times = 300
+warmup_times = -1
 run_times = 3000
 total_time = 0.
 cnt = 0

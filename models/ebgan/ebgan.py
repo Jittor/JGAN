@@ -46,40 +46,6 @@ def save_image(img, path, nrow=10):
     img=img.transpose((1,2,0))
     cv2.imwrite(path,img)
 
-class BatchNorm1d(nn.Module):
-    def __init__(self, num_features, eps=1e-5, momentum=0.1, affine=None, is_train=True, sync=True):
-        assert affine == None
-
-        self.sync = sync
-        self.num_features = num_features
-        self.is_train = is_train
-        self.eps = eps
-        self.momentum = momentum
-        self.weight = init.constant((num_features,), "float32", 1.0)
-        self.bias = init.constant((num_features,), "float32", 0.0)
-        self.running_mean = init.constant((num_features,), "float32", 0.0).stop_grad()
-        self.running_var = init.constant((num_features,), "float32", 1.0).stop_grad()
-
-    def execute(self, x):
-        if self.is_train:
-            xmean = jt.mean(x, dims=[0], keepdims=1)
-            x2mean = jt.mean(x*x, dims=[0], keepdims=1)
-            if self.sync and jt.mpi:
-                xmean = xmean.mpi_all_reduce("mean")
-                x2mean = x2mean.mpi_all_reduce("mean")
-
-            xvar = x2mean-xmean*xmean
-            norm_x = (x-xmean)/jt.sqrt(xvar+self.eps)
-            self.running_mean += (xmean.sum([0])-self.running_mean)*self.momentum
-            self.running_var += (xvar.sum([0])-self.running_var)*self.momentum
-        else:
-            running_mean = self.running_mean.broadcast(x, [0])
-            running_var = self.running_var.broadcast(x, [0])
-            norm_x = (x-running_mean)/jt.sqrt(running_var+self.eps)
-        w = self.weight.broadcast(x, [0])
-        b = self.bias.broadcast(x, [0])
-        return norm_x * w + b
-
 def weights_init_normal(m):
     classname = m.__class__.__name__
     if (classname.find('Conv') != (- 1)):
@@ -109,10 +75,8 @@ class Generator(nn.Module):
 
     def execute(self, noise):
         out = self.l1(noise)
-        #print(out)
         out = out.reshape((out.shape[0], 128, self.init_size, self.init_size))
         img = self.conv_blocks(out)
-        #print(img)
         return img
 
 class Discriminator(nn.Module):
@@ -124,10 +88,10 @@ class Discriminator(nn.Module):
         down_dim = (64 * ((opt.img_size // 2) ** 2))
         self.embedding = nn.Linear(down_dim, 32)
         self.fc = nn.Sequential(
-            BatchNorm1d(32, 0.8),
+            nn.BatchNorm1d(32, 0.8),
             nn.ReLU(),
             nn.Linear(32, down_dim),
-            BatchNorm1d(down_dim),
+            nn.BatchNorm1d(down_dim),
             nn.ReLU()
         )
         self.up = nn.Sequential(nn.Upsample(scale_factor=2), nn.Conv(64, opt.channels, 3, stride=1, padding=1))
@@ -135,7 +99,6 @@ class Discriminator(nn.Module):
     def execute(self, img):
         out = self.down(img)
         embedding = self.embedding(out.reshape((out.shape[0], (- 1))))
-        #print(embedding.shape)
         out = self.fc(embedding)
         out = self.up(out.reshape((out.shape[0], 64, self.down_size, self.down_size)))
         return (out, embedding)
@@ -148,8 +111,8 @@ generator = Generator()
 discriminator = Discriminator()
 
 # Optimizers
-optimizer_G = nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+optimizer_G = jt.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+optimizer_D = jt.optim.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
 def pullaway_loss(embeddings):
     norm = jt.sqrt((embeddings ** 2).sum(1,keepdims=True))
@@ -159,7 +122,7 @@ def pullaway_loss(embeddings):
     loss_pt = (jt.sum(similarity) - batch_size) / (batch_size * (batch_size - 1))
     return loss_pt
 
-warmup_times = 300
+warmup_times = -1
 run_times = 3000
 total_time = 0.
 cnt = 0

@@ -61,7 +61,7 @@ print(opt)
 def save_image(img, path, nrow=10):
     N,C,W,H = img.shape
     if (N%nrow!=0):
-        print("N%nrow!=0")
+        print("save_image error: N%nrow!=0")
         return
     img=img.transpose((1,0,2,3))
     ncol=int(N/nrow)
@@ -86,7 +86,7 @@ criterion_cycle = nn.L1Loss()
 bce_with_logits_loss = nn.BCEWithLogitsLoss()
 
 def criterion_cls(logit, target):
-    return bce_with_logits_loss(logit, target) / logit.size(0)
+    return bce_with_logits_loss(logit, target, size_average=False) / logit.size(0)
 
 # Loss weights
 lambda_cls = 1
@@ -97,11 +97,9 @@ lambda_gp = 10
 generator = GeneratorResNet(img_shape=img_shape, res_blocks=opt.residual_blocks, c_dim=c_dim)
 discriminator = Discriminator(img_shape=img_shape, c_dim=c_dim)
 
-#TODO: Load pretrained models
-
 # Optimizers
-optimizer_G = nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-optimizer_D = nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+optimizer_G = jt.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+optimizer_D = jt.optim.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
 # Configure dataloaders
 train_transforms = [
@@ -111,7 +109,7 @@ train_transforms = [
     transform.ImageNormalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 ]
 dataloader = CelebADataset(
-        "../data/%s" % opt.dataset_name, transform_=train_transforms, mode="train", attributes=opt.selected_attrs).set_attrs(
+        "../../data/%s" % opt.dataset_name, transform_=train_transforms, mode="train", attributes=opt.selected_attrs).set_attrs(
     batch_size=opt.batch_size,
     shuffle=True,
     num_workers=opt.n_cpu,
@@ -121,7 +119,7 @@ val_transforms = [
     transform.ImageNormalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 ]
 val_dataloader = CelebADataset(
-        "../data/%s" % opt.dataset_name, transform_=train_transforms, mode="val", attributes=opt.selected_attrs).set_attrs(
+        "../../data/%s" % opt.dataset_name, transform_=train_transforms, mode="val", attributes=opt.selected_attrs).set_attrs(
     batch_size=10,
     shuffle=True,
     num_workers=opt.n_cpu,
@@ -188,11 +186,6 @@ saved_samples = []
 start_time = time.time()
 for epoch in range(opt.epoch, opt.n_epochs):
     for i, (imgs, labels) in enumerate(dataloader):
-
-        # Model inputs
-        imgs = jt.array(imgs).stop_grad()
-        labels = jt.array(labels).stop_grad()
-
         # Sample labels as generator inputs
         sampled_c = jt.array(np.random.randint(0, 2, (imgs.size(0), c_dim)).astype(np.float32)).stop_grad()
         # Generate fake batch of images
@@ -205,7 +198,7 @@ for epoch in range(opt.epoch, opt.n_epochs):
         # Real images
         real_validity, pred_cls = discriminator(imgs)
         # Fake images
-        fake_validity, _ = discriminator(fake_imgs.detach())
+        fake_validity, _ = discriminator(fake_imgs)
         # Gradient penalty
         gradient_penalty = compute_gradient_penalty(discriminator, imgs, fake_imgs)
         # Adversarial loss
@@ -283,4 +276,3 @@ for epoch in range(opt.epoch, opt.n_epochs):
                 total_time = time.time() - sta
                 print(f"run {run_times} iters cost {total_time} seconds, and avg {total_time / run_times} one iter.")
                 exit(0)
-#TODO: Save model checkpoints

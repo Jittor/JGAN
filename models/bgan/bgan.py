@@ -35,50 +35,9 @@ def save_image(img, path, nrow=10):
     img=img2[:,:W*nrow,:]
     for i in range(1,nrow):
         img=np.concatenate([img,img2[:,W*nrow*i:W*nrow*(i+1),:]],axis=2)
-    print(img.shape)
     img=(img+1.0)/2.0*255
     img=img.transpose((1,2,0))
     cv2.imwrite(path,img)
-
-class BCELoss(nn.Module):
-    def __init__(self):
-        pass
-    def execute(self, output, target):
-        return - (target * jt.log(jt.maximum(output, 1e-20)) + (1 - target) * jt.log(jt.maximum(1 - output, 1e-20))).mean()
-
-class BatchNorm1d(nn.Module):
-    def __init__(self, num_features, eps=1e-5, momentum=0.1, affine=None, is_train=True, sync=True):
-        assert affine == None
-
-        self.sync = sync
-        self.num_features = num_features
-        self.is_train = is_train
-        self.eps = eps
-        self.momentum = momentum
-        self.weight = init.constant((num_features,), "float32", 1.0)
-        self.bias = init.constant((num_features,), "float32", 0.0)
-        self.running_mean = init.constant((num_features,), "float32", 0.0).stop_grad()
-        self.running_var = init.constant((num_features,), "float32", 1.0).stop_grad()
-
-    def execute(self, x):
-        if self.is_train:
-            xmean = jt.mean(x, dims=[0], keepdims=1)
-            x2mean = jt.mean(x*x, dims=[0], keepdims=1)
-            if self.sync and jt.mpi:
-                xmean = xmean.mpi_all_reduce("mean")
-                x2mean = x2mean.mpi_all_reduce("mean")
-
-            xvar = x2mean-xmean*xmean
-            norm_x = (x-xmean)/jt.sqrt(xvar+self.eps)
-            self.running_mean += (xmean.sum([0])-self.running_mean)*self.momentum
-            self.running_var += (xvar.sum([0])-self.running_var)*self.momentum
-        else:
-            running_mean = self.running_mean.broadcast(x, [0])
-            running_var = self.running_var.broadcast(x, [0])
-            norm_x = (x-running_mean)/jt.sqrt(running_var+self.eps)
-        w = self.weight.broadcast(x, [0])
-        b = self.bias.broadcast(x, [0])
-        return norm_x * w + b
 
 class Generator(nn.Module):
 
@@ -88,7 +47,7 @@ class Generator(nn.Module):
         def block(in_feat, out_feat, normalize=True):
             layers = [nn.Linear(in_feat, out_feat)]
             if normalize:
-                layers.append(BatchNorm1d(out_feat, 0.8))
+                layers.append(nn.BatchNorm1d(out_feat, 0.8))
             layers.append(nn.Leaky_relu(0.2))
             return layers
         self.model = nn.Sequential(*block(opt.latent_dim, 128, normalize=False), *block(128, 256), *block(256, 512), *block(512, 1024), nn.Linear(1024, int(np.prod(img_shape))), nn.Tanh())
@@ -113,7 +72,7 @@ def boundary_seeking_loss(y_pred, y_true):
     '\n    Boundary seeking loss.\n    Reference: https://wiseodd.github.io/techblog/2017/03/07/boundary-seeking-gan/\n    '
     return (0.5 * jt.mean(((jt.log(y_pred) - jt.log((1 - y_pred))) ** 2)))
 
-discriminator_loss = BCELoss()
+discriminator_loss = nn.BCELoss()
 
 # Initialize generator and discriminator
 generator = Generator()
@@ -128,10 +87,10 @@ transform = transform.Compose([
 dataloader = MNIST(train=True, transform=transform).set_attrs(batch_size=opt.batch_size, shuffle=True)
 
 # Optimizers
-optimizer_G = jt.nn.Adam(generator.parameters(), opt.lr, betas=(opt.b1, opt.b2))
-optimizer_D = jt.nn.Adam(discriminator.parameters(), opt.lr, betas=(opt.b1, opt.b2))
+optimizer_G = jt.optim.Adam(generator.parameters(), opt.lr, betas=(opt.b1, opt.b2))
+optimizer_D = jt.optim.Adam(discriminator.parameters(), opt.lr, betas=(opt.b1, opt.b2))
 
-warmup_times = 300
+warmup_times = -1
 run_times = 3000
 total_time = 0.
 cnt = 0
@@ -167,7 +126,7 @@ for epoch in range(opt.n_epochs):
                 print(('[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]' % (epoch, opt.n_epochs, i, len(dataloader), d_loss.numpy()[0], g_loss.numpy()[0])))
             batches_done = ((epoch * len(dataloader)) + i)
             if ((batches_done % opt.sample_interval) == 0):
-                save_image(gen_imgs.data[:25], ('jittor_images/%d.png' % batches_done), nrow=5)
+                save_image(gen_imgs.data[:25], ('images/%d.png' % batches_done), nrow=5)
         else:
             jt.sync_all()
             cnt += 1

@@ -36,24 +36,6 @@ def save_image(img, path, nrow=10):
     img=img.transpose((1,2,0))
     cv2.imwrite(path,img)
 
-class BCELoss(nn.Module):
-    def __init__(self):
-        pass
-    def execute(self, output, target):
-        return - (target * jt.log(jt.maximum(output, 1e-20)) + (1 - target) * jt.log(jt.maximum(1 - output, 1e-20))).mean()
-
-class MSELoss(nn.Module):
-    def __init__(self):
-        pass
-    def execute(self, output, target):
-        return (output-target).sqr().mean()
-
-class CrossEntropyLoss(nn.Module):
-    def __init__(self):
-        pass
-    def execute(self, output, target):
-        return nn.cross_entropy_loss(output, target)
-
 def sample_z(shape=64, latent_dim=10, n_c=10, fix_class=(- 1)):
     assert ((fix_class == (- 1)) or ((fix_class >= 0) and (fix_class < n_c))), ('Requested class %i outside bounds.' % fix_class)
     zn = jt.array(0.75 * np.random.normal(0, 1, (shape, latent_dim)).astype(np.float32)).stop_grad()
@@ -84,20 +66,14 @@ def calc_gradient_penalty(netD, real_data, generated_data):
 def initialize_weights(net):
     for m in net.modules():
         if isinstance(m, nn.Conv):
-            print("Conv")
             init.gauss_(m.weight, 0, 0.02)
             init.constant_(m.bias, 0)
         elif isinstance(m, nn.ConvTranspose):
-            print("ConvTranspose")
             init.gauss_(m.weight, 0, 0.02)
             init.constant_(m.bias, 0)
         elif isinstance(m, nn.Linear):
-            print("Linear")
             init.gauss_(m.weight, 0, 0.02)
             init.constant_(m.bias, 0)
-
-def softmax(x):
-    return nn.softmax(x, dim=1)
 
 class BatchNorm1d(nn.Module):
     def __init__(self, num_features, eps=1e-5, momentum=0.1, affine=None, is_train=True, sync=True):
@@ -204,7 +180,7 @@ class Encoder_CNN(nn.Module):
         z = jt.reshape(z_img, [z_img.shape[0], (- 1)])
         zn = z[:, 0:self.latent_dim]
         zc_logits = z[:, self.latent_dim:]
-        zc = softmax(zc_logits)
+        zc = nn.softmax(zc_logits, dim=1)
         return (zn, zc, zc_logits)
 
 class Discriminator_CNN(nn.Module):
@@ -249,9 +225,9 @@ wass_metric = args.wass_flag
 print(wass_metric)
 x_shape = (channels, img_size, img_size)
 
-bce_loss = BCELoss()
-xe_loss = CrossEntropyLoss()
-mse_loss = MSELoss()
+bce_loss = nn.BCELoss()
+xe_loss = nn.CrossEntropyLoss()
+mse_loss = nn.MSELoss()
 
 # Initialize generator and discriminator
 generator = Generator_CNN(latent_dim, n_c, x_shape)
@@ -271,8 +247,8 @@ ge_chain = generator.parameters()
 for p in encoder.parameters():
     ge_chain.append(p)
 #TODO: weight_decay=decay
-optimizer_GE = jt.nn.Adam(ge_chain, lr=lr, betas=(b1, b2), weight_decay=0.0)
-optimizer_D = jt.nn.Adam(discriminator.parameters(), lr=lr, betas=(b1, b2))
+optimizer_GE = jt.optim.Adam(ge_chain, lr=lr, betas=(b1, b2), weight_decay=0.0)
+optimizer_D = jt.optim.Adam(discriminator.parameters(), lr=lr, betas=(b1, b2))
 
 ge_l = []
 d_l = []
@@ -280,7 +256,7 @@ c_zn = []
 c_zc = []
 c_i = []
 
-warmup_times = 300
+warmup_times = -1
 run_times = 3000
 total_time = 0.
 cnt = 0
@@ -330,17 +306,18 @@ for epoch in range(n_epochs):
             d_loss = ((real_loss + fake_loss) / 2)
         optimizer_D.step(d_loss)
         
-        jt.sync_all()
-        cnt += 1
-        print(cnt)
-        if cnt == warmup_times:
-            jt.sync_all(True)
-            sta = time.time()
-        if cnt > warmup_times + run_times:
-            jt.sync_all(True)
-            total_time = time.time() - sta
-            print(f"run {run_times} iters cost {total_time} seconds, and avg {total_time / run_times} one iter.")
-            exit(0)
+        if warmup_times!=-1:
+            jt.sync_all()
+            cnt += 1
+            print(cnt)
+            if cnt == warmup_times:
+                jt.sync_all(True)
+                sta = time.time()
+            if cnt > warmup_times + run_times:
+                jt.sync_all(True)
+                total_time = time.time() - sta
+                print(f"run {run_times} iters cost {total_time} seconds, and avg {total_time / run_times} one iter.")
+                exit(0)
 
     if warmup_times==-1:
         d_l.append(d_loss.numpy()[0])

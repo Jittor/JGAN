@@ -46,7 +46,7 @@ print(opt)
 def save_image(img, path, nrow=10):
     N,C,W,H = img.shape
     if (N%nrow!=0):
-        print("N%nrow!=0")
+        print("save_image error: N%nrow!=0")
         return
     img=img.transpose((1,0,2,3))
     ncol=int(N/nrow)
@@ -67,8 +67,8 @@ patch_h, patch_w = int(opt.mask_size / 2 ** 3), int(opt.mask_size / 2 ** 3)
 patch = (1, patch_h, patch_w)
 
 # Loss function
-adversarial_loss = MSELoss()
-pixelwise_loss = L1Loss()
+adversarial_loss = nn.MSELoss()
+pixelwise_loss = nn.L1Loss()
 
 # Initialize generator and discriminator
 generator = Generator(channels=opt.channels)
@@ -79,12 +79,12 @@ transforms_ = [
     transform.Resize((opt.img_size, opt.img_size), mode=Image.BICUBIC),
     transform.ImageNormalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 ]
-dataloader = ImageDataset("../data/%s" % opt.dataset_name, transforms_=transforms_).set_attrs(
+dataloader = ImageDataset("../../data/%s" % opt.dataset_name, transforms_=transforms_).set_attrs(
     batch_size=opt.batch_size,
     shuffle=True,
     num_workers=opt.n_cpu,
 )
-test_dataloader = ImageDataset("../data/%s" % opt.dataset_name, transforms_=transforms_, mode="val").set_attrs(
+test_dataloader = ImageDataset("../../data/%s" % opt.dataset_name, transforms_=transforms_, mode="val").set_attrs(
     batch_size=12,
     shuffle=True,
     num_workers=1,
@@ -92,8 +92,8 @@ test_dataloader = ImageDataset("../data/%s" % opt.dataset_name, transforms_=tran
 test_iter = iter(test_dataloader)
 
 # Optimizers
-optimizer_G = jt.nn.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
-optimizer_D = jt.nn.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+optimizer_G = jt.optim.Adam(generator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
+optimizer_D = jt.optim.Adam(discriminator.parameters(), lr=opt.lr, betas=(opt.b1, opt.b2))
 
 def save_sample(batches_done):
     global test_iter
@@ -113,7 +113,7 @@ def save_sample(batches_done):
     sample = np.concatenate((masked_samples.numpy(), filled_samples.numpy(), samples.numpy()), 2)
     save_image(sample, "images/%d.png" % batches_done, nrow=6)
 
-warmup_times = 300
+warmup_times = -1
 run_times = 3000
 total_time = 0.
 cnt = 0
@@ -152,13 +152,15 @@ for epoch in range(opt.n_epochs):
         optimizer_D.step(d_loss)
 
         if warmup_times==-1:
-            print(
-                "[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G adv: %f, pixel: %f]"
-                % (epoch, opt.n_epochs, i, len(dataloader), d_loss.numpy()[0], g_adv.numpy()[0], g_pixel.numpy()[0])
-            )
+            jt.sync_all()
+            batches_done = epoch * len(dataloader) + i
+            if batches_done % 50 == 0:
+                print(
+                    "[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G adv: %f, pixel: %f]"
+                    % (epoch, opt.n_epochs, i, len(dataloader), d_loss.numpy()[0], g_adv.numpy()[0], g_pixel.numpy()[0])
+                )
 
             # Generate sample at sample interval
-            batches_done = epoch * len(dataloader) + i
             if batches_done % opt.sample_interval == 0:
                 save_sample(batches_done)
         else:            
