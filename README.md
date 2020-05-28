@@ -5,7 +5,7 @@ Code based on [Pytorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
 Our GAN model zoo supports 31 kinds of GAN.
 This table is the latest citations we found from Google Scholar.
 It can be seen that since GAN was proposed in 2014, a lot of excellent work based on GAN has appeared.
-These 28 GANs have a total of 60953 citations, with an average of 2176 citations per article.
+These 27 GANs have a total of 60953 citations, with an average of 2176 citations per article.
 
 <p align="center">
     <img src="assets/cite.png"\>
@@ -39,9 +39,7 @@ In another form of presentation, assuming that Pytorch's training time is 100 ho
     + [Coupled GAN](#coupled-gan)
     + [CycleGAN](#cyclegan)
     + [Deep Convolutional GAN](#deep-convolutional-gan)
-    + [DiscoGAN](#discogan)
     + [DRAGAN](#dragan)
-    + [DualGAN](#dualgan)
     + [Energy-Based GAN](#energy-based-gan)
     + [Enhanced Super-Resolution GAN](#enhanced-super-resolution-gan)
     + [GAN](#gan)
@@ -53,7 +51,6 @@ In another form of presentation, assuming that Pytorch's training time is 100 ho
     + [Semi-Supervised GAN](#semi-supervised-gan)
     + [Softmax GAN](#softmax-gan)
     + [StarGAN](#stargan)
-    + [Super-Resolution GAN](#super-resolution-gan)
     + [UNIT](#unit)
     + [Wasserstein GAN](#wasserstein-gan)
     + [Wasserstein GAN GP](#wasserstein-gan-gp)
@@ -288,31 +285,6 @@ $ python3.7 dcgan.py
     <img src="assets/dcgan.png" width="240"\>
 </p>
 
-### DiscoGAN
-_Learning to Discover Cross-Domain Relations with Generative Adversarial Networks_
-
-#### Authors
-Taeksoo Kim, Moonsu Cha, Hyunsoo Kim, Jung Kwon Lee, Jiwon Kim
-
-[[Paper]](https://arxiv.org/abs/1703.05192) [[Code]](models/discogan/discogan.py)
-
-#### Run Example
-```
-$ cd data/
-$ bash download_pix2pix_dataset.sh edges2shoes
-$ cd ../models/discogan/
-$ python3.7 discogan.py --dataset_name edges2shoes
-```
-
-<p align="center">
-    <img src="assets/discogan.gif" width="200"\>
-</p>
-<p align="center">
-    Rows from top to bottom: (1) Real image from domain A (2) Translated image from <br>
-    domain A (3) Reconstructed image from domain A (4) Real image from domain B (5) <br>
-    Translated image from domain B (6) Reconstructed image from domain B
-</p>
-
 ### DRAGAN
 _On Convergence and Stability of GANs_
 
@@ -333,28 +305,6 @@ $ python3.7 dragan.py
 <img src="assets/dragan.png" width="240"\>
 ```
 
-</p>
-
-### DualGAN
-
-_DualGAN: Unsupervised Dual Learning for Image-to-Image Translation_
-
-#### Authors
-Zili Yi, Hao Zhang, Ping Tan, Minglun Gong
-
-[[Paper]](https://arxiv.org/abs/1704.02510) [[Code]](models/dualgan/dualgan.py)
-
-
-#### Run Example
-```
-$ cd data/
-$ bash download_pix2pix_dataset.sh facades
-$ cd ../models/dualgan/
-$ python3.7 dualgan.py --dataset_name facades
-```
-
-<p align="center">
-    <img src="assets/dualgan.gif" width="240"\>
 </p>
 
 ### Energy-Based GAN
@@ -582,21 +532,6 @@ $ python3.7 stargan.py
 <p align="center">
     Original | Black Hair | Blonde Hair | Brown Hair | Gender Flip | Aged
 </p>
-
-### Super-Resolution GAN
-_Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network_
-
-#### Authors
-Christian Ledig, Lucas Theis, Ferenc Huszar, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan Wang, Wenzhe Shi
-
-[[Paper]](https://arxiv.org/abs/1609.02002) [[Code]](models/srgan/srgan.py)
-
-#### Run Example
-```
-$ cd models/srgan/
-<follow steps at the top of srgan.py>
-$ python3.7 srgan.py
-```
 
 ### UNIT
 _Unsupervised Image-to-Image Translation Networks_
