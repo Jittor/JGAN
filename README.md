@@ -414,6 +414,15 @@ $ python3.7 pix2pix.py --dataset_name facades
 <img src="assets/pix2pix.png" width="240"\>
 </p>
 
+<p align="center">
+
+```
+Rows from top to bottom: (1) The condition for the generator (2) Generated image <br>
+based of condition (3) The true corresponding image to the condition
+```
+
+</p>
+
 ### PixelDA
 
 _Unsupervised Pixel-Level Domain Adaptation with Generative Adversarial Networks_
