@@ -2,7 +2,7 @@
 
 Code based on [Pytorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
 
-Our GAN model zoo supports 31 kinds of GAN.
+Our GAN model zoo supports 27 kinds of GAN.
 This table is the latest citations we found from Google Scholar.
 It can be seen that since GAN was proposed in 2014, a lot of excellent work based on GAN has appeared.
 These 27 GANs have a total of 60953 citations, with an average of 2176 citations per article.
@@ -34,7 +34,6 @@ In another form of presentation, assuming that Pytorch's training time is 100 ho
     + [Boundary-Seeking GAN](#boundary-seeking-gan)
     + [Cluster GAN](#cluster-gan)
     + [Conditional GAN](#conditional-gan)
-    + [Context-Conditional GAN](#context-conditional-gan)
     + [Context Encoder](#context-encoder)
     + [Coupled GAN](#coupled-gan)
     + [CycleGAN](#cyclegan)
