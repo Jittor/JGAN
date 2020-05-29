@@ -398,10 +398,6 @@ Phillip Isola, Jun-Yan Zhu, Tinghui Zhou, Alexei A. Efros
 
 [[Paper]](https://arxiv.org/abs/1611.07004) [[Code]](models/pix2pix/pix2pix.py)
 
-<p align="center">
-    <img src="http://eriklindernoren.se/images/pix2pix_architecture.png" width="640"\>
-</p>
-
 #### Run Example
 ```
 $ cd data/
@@ -409,11 +405,6 @@ $ bash download_pix2pix_dataset.sh facades
 $ cd ../models/pix2pix/
 $ python3.7 pix2pix.py --dataset_name facades
 ```
-
-<p align="center">
-    Rows from top to bottom: (1) The condition for the generator (2) Generated image <br>
-    based of condition (3) The true corresponding image to the condition
-</p>
 
 ### PixelDA
 _Unsupervised Pixel-Level Domain Adaptation with Generative Adversarial Networks_
