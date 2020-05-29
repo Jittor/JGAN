@@ -76,9 +76,7 @@ $ python3.7 acgan.py
 ```
 
 <p align="center">
-
 <img src="assets/acgan.png" width="200"\>
-
 </p>
 
 ### Adversarial Autoencoder
@@ -96,9 +94,7 @@ $ python3.7 aae.py
 ```
 
 <p align="center">
-
 <img src="assets/aae.gif" width="200"\>
-
 </p>
 
 ### BEGAN
@@ -116,9 +112,7 @@ $ python3.7 began.py
 ```
 
 <p align="center">
-
 <img src="assets/began.gif" width="200"\>
-
 </p>
 
 ### BicycleGAN
@@ -138,9 +132,7 @@ $ python3.7 bicyclegan.py
 ```
 
 <p align="center">
-
 <img src="assets/bicyclegan.png" width="400"\>
-
 </p>
 <p align="center">
     Various style translations by varying the latent code.
@@ -181,9 +173,7 @@ $ python3.7 clustergan.py
 ```
 
 <p align="center">
-
 <img src="assets/cluster_gan.png" width="200"\>
-
 </p>
 
 
@@ -202,9 +192,7 @@ $ python3.7 cgan.py
 ```
 
 <p align="center">
-
 <img src="assets/cgan.gif" width="200"\>
-
 </p>
 
 ### Context Encoder
@@ -223,9 +211,7 @@ $ python3.7 context_encoder.py
 ```
 
 <p align="center">
-
 <img src="assets/context_encoder.png" width="640"\>
-
 </p>
 <p align="center">
     Rows: Masked | Inpainted | Original | Masked | Inpainted | Original
@@ -247,9 +233,7 @@ $ python3.7 cogan.py
 ```
 
 <p align="center">
-
 <img src="assets/cogan.gif" width="200"\>
-
 </p>
 <p align="center">
     Generated MNIST and MNIST-M images
@@ -272,9 +256,7 @@ $ python3.7 cyclegan.py --dataset_name monet2photo
 ```
 
 <p align="center">
-
 <img src="assets/cyclegan.png" width="400"\>
-
 </p>
 <p align="center">
     Monet to photo translations.
@@ -295,9 +277,7 @@ $ python3.7 dcgan.py
 ```
 
 <p align="center">
-
 <img src="assets/dcgan.png" width="240"\>
-
 </p>
 
 ### DRAGAN
@@ -315,9 +295,7 @@ $ python3.7 dragan.py
 ```
 
 <p align="center">
-
 <img src="assets/dragan.png" width="240"\>
-
 </p>
 
 ### Energy-Based GAN
@@ -335,9 +313,7 @@ $ python3.7 ebgan.py
 ```
 
 <p align="center">
-
 <img src="assets/ebgan.png" width="240"\>
-
 </p>
 
 ### Enhanced Super-Resolution GAN
@@ -358,9 +334,7 @@ $ python3.7 esrgan.py
 ```
 
 <p align="center">
-
 <img src="assets/esrgan.gif" width="320"\>
-
 </p>
 
 ### GAN
@@ -378,9 +352,7 @@ $ python3.7 gan.py
 ```
 
 <p align="center">
-
 <img src="assets/gan.png" width="240"\>
-
 </p>
 
 ### InfoGAN
@@ -397,9 +369,7 @@ $ cd models/infogan/
 $ python3.7 infogan.py
 ```
 <p align="center">
-
 <img src="assets/infogan.png" width="200"\>
-
 </p>
 <p align="center">
     Result of varying continuous latent variable by row.
@@ -441,9 +411,7 @@ $ python3.7 pix2pix.py --dataset_name facades
 ```
 
 <p align="center">
-
 <img src="assets/pix2pix.png" width="240"\>
-
 </p>
 
 ### PixelDA
@@ -465,9 +433,7 @@ $ python3.7 pixelda.py
 ```
 
 <p align="center">
-
 <img src="assets/pixelda.gif" width="200"\>
-
 </p>
 <p align="center">
     Rows from top to bottom: (1) Real images from MNIST (2) Translated images from <br>
@@ -543,9 +509,7 @@ $ python3.7 stargan.py
 ```
 
 <p align="center">
-
 <img src="assets/stargan.png" width="240"\>
-
 </p>
 
 <p align="center">
@@ -603,9 +567,7 @@ $ python3.7 wgan_gp.py
 ```
 
 <p align="center">
-
 <img src="assets/wgan_gp.png" width="240"\>
-
 </p>
 
 ### Wasserstein GAN DIV
@@ -624,7 +586,5 @@ $ python3.7 wgan_div.py
 ```
 
 <p align="center">
-
 <img src="assets/wgan_div.gif" width="240"\>
-
 </p>
