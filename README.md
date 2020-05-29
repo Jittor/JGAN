@@ -154,11 +154,7 @@ $ python3.7 bgan.py
 ```
 
 <p align="center">
-
-```
 <img src="assets/bgan.png" width="240"\>
-```
-
 </p>
 
 ### Cluster GAN
@@ -299,11 +295,7 @@ $ python3.7 dragan.py
 ```
 
 <p align="center">
-
-```
-<img src="assets/dragan.png" width="240"\>
-```
-
+    <img src="assets/dragan.png" width="240"\>
 </p>
 
 ### Energy-Based GAN
@@ -394,11 +386,7 @@ $ python3.7 lsgan.py
 ```
 
 <p align="center">
-
-```
 <img src="assets/lsgan.png" width="200"\>
-```
-
 </p>
 
 ### Pix2Pix
@@ -468,11 +456,7 @@ $ python3.7 relativistic_gan.py --rel_avg_gan   # Relativistic Average GAN
 ```
 
 <p align="center">
-
-```
 <img src="assets/relativistic_gan.png" width="240"\>
-```
-
 </p>
 
 ### Semi-Supervised GAN
@@ -505,11 +489,7 @@ $ python3.7 softmax_gan.py
 ```
 
 <p align="center">
-
-```
 <img src="assets/softmax_gan.png" width="240"\>
-```
-
 </p>
 
 ### StarGAN
@@ -563,11 +543,7 @@ $ python3.7 wgan.py
 ```
 
 <p align="center">
-
-```
 <img src="assets/wgan.png" width="240"\>
-```
-
 </p>
 
 ### Wasserstein GAN GP
