@@ -17,7 +17,7 @@ We compared the performance of these GANs of Jittor and Pytorch. The picture bel
     <img src="assets/speedup.png"\>
 </p>
 
-In another form of presentation, assuming that Pytorch's training time is 100 hours, we calculated the time required for GAN training corresponding to Jittor. Of these GANs, our fastest accelerating GAN takes only 39 hours to run, with an average of 56 hours.
+In another form of presentation, assuming that Pytorch's training time is 100 hours, we calculated the time required for GAN training corresponding to Jittor. Of these GANs, our fastest accelerating GAN takes only 35 hours to run, with an average of 57 hours.
 
 <p align="center">
     <img src="assets/100h.png"\>
