@@ -4,9 +4,10 @@ The dataset can be downloaded from: https://www.dropbox.com/sh/8oqt9vytwxb3s4r/A
 And the annotations: https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AAA8YmAHNNU6BEfWMPMfM6r9a/Anno?dl=0&preview=list_attr_celeba.txt
 Instructions on running the script:
 1. Download the dataset and annotations from the provided link
-2. Copy 'list_attr_celeba.txt' to folder 'img_align_celeba_attr'
-2. Save the folder 'img_align_celeba_attr' to '../../data/'
-4. Run the script by 'python3 stargan.py'
+2. Put images to folder 'img_align_celeba_attr/images'
+3. Copy 'list_attr_celeba.txt' to folder 'img_align_celeba_attr'
+4. Save the folder 'img_align_celeba_attr' to '../../data/'
+5. Run the script by 'python3 stargan.py'
 """
 
 import jittor as jt
