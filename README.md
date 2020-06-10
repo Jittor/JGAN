@@ -11,7 +11,7 @@ These 27 GANs have a total of 60953 citations, with an average of 2176 citations
     <img src="assets/cite.png"\>
 </p>
 
-We compared the performance of these GANs of Jittor and Pytorch. The picture below is the speedup ratio of Jittor relative to Pytorch. It can be seen that the highest acceleration ratio of these GANs reaches 283%, and the average acceleration ratio is 185%.
+We compared the performance of these GANs of Jittor and Pytorch. The PyTorch version code uses the commit a163b8 on August 24, 2019 of the master branch of github repository: https://github.com/eriklindernoren/PyTorch-GAN. The picture below is the speedup ratio of Jittor relative to Pytorch. It can be seen that the highest acceleration ratio of these GANs reaches 283%, and the average acceleration ratio is 185%.
 
 <p align="center">
     <img src="assets/speedup.png"\>
