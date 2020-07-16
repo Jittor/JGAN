@@ -17,8 +17,8 @@ opt = parser.parse_args()
 print(opt)
 
 # Define Model
-generator = Generator(opt)
-discriminator = Discriminator(opt)
+generator = Generator(opt.n_classes, opt.latent_dim, opt.channels, opt.img_size)
+discriminator = Discriminator(opt.n_classes, opt.latent_dim, opt.channels, opt.img_size)
 
 # Load Parameters
 generator.load_parameters(pickle.load(open('saved_models/generator_last.pkl', 'rb')))

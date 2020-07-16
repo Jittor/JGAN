@@ -30,8 +30,8 @@ print(opt)
 # Loss functions
 adversarial_loss = nn.MSELoss()
 
-generator = Generator(opt)
-discriminator = Discriminator(opt)
+generator = Generator(opt.n_classes, opt.latent_dim, opt.channels, opt.img_size)
+discriminator = Discriminator(opt.n_classes, opt.latent_dim, opt.channels, opt.img_size)
 
 # Configure data loader
 from jittor.dataset.mnist import MNIST
