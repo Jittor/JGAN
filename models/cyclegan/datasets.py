@@ -14,6 +14,7 @@ def to_rgb(image):
 
 class ImageDataset(Dataset):
     def __init__(self, root, transform_=None, unaligned=False, mode="train"):
+        super().__init__()
         self.transform = transform.Compose(transform_)
         self.unaligned = unaligned
 
