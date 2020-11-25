@@ -64,7 +64,7 @@ lambda_4 = 100  # Cycle pixel-wise
 
 # Optimizers
 optimizer_G =  nn.Adam(
-    E1.parameters() +X E2.parameters() + G1.parameters() + G2.parameters(),
+    E1.parameters() + E2.parameters() + G1.parameters() + G2.parameters(),
     lr=opt.lr,
     betas=(opt.b1, opt.b2),
 )
