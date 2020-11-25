@@ -84,10 +84,10 @@ img_shape = (opt.channels, opt.img_height, opt.img_width)
 
 # Loss functions
 criterion_cycle = nn.L1Loss()
-bce_with_logits_loss = nn.BCEWithLogitsLoss()
+bce_with_logits_loss = nn.BCEWithLogitsLoss(size_average=False)
 
 def criterion_cls(logit, target):
-    return bce_with_logits_loss(logit, target, size_average=False) / logit.size(0)
+    return bce_with_logits_loss(logit, target) / logit.size(0)
 
 # Loss weights
 lambda_cls = 1
