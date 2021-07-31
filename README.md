@@ -1,4 +1,4 @@
-## Jittor-GAN
+# Jittor-GAN
 
 Code based on [Pytorch-GAN](https://github.com/eriklindernoren/PyTorch-GAN)
 
