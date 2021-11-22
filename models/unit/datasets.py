@@ -8,6 +8,7 @@ import jittor.transform as transform
 
 class ImageDataset(Dataset):
     def __init__(self, root, transforms_=None, unaligned=False, mode="train"):
+        super().__init__()
         self.transform = transform.Compose(transforms_)
         self.unaligned = unaligned
         self.files_A = sorted(glob.glob(os.path.join(root, "%s/A" % mode) + "/*.*"))

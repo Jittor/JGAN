@@ -19,6 +19,7 @@ def denormalize(var):
 
 class ImageDataset(Dataset):
     def __init__(self, root, hr_shape):
+        super().__init__()
         hr_height, hr_width = hr_shape
         # transform for low resolution images and high resolution images
         self.lr_transform = transform.Compose(

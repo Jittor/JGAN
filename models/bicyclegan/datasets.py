@@ -7,6 +7,7 @@ import jittor.transform as transform
 
 class ImageDataset(Dataset):
     def __init__(self, root, input_shape, mode="train"):
+        super().__init__()
         self.transform = transform.Compose(
             [
                 transform.Resize(input_shape[-2:]),
