@@ -72,6 +72,9 @@ In another form of presentation, assuming that Pytorch's training time is 100 ho
 选手可以基于示例代码填充注释为 TODO 的部分完成该赛题。
 
 ```
+git clone https://github.com/Jittor/gan-jittor.git
+cd gan-jittor/
+sudo python3.7 -m pip install -r requirements.txt
 cd competition/warm_up_comp
 修改 CGAN.py 使其运行
 ```
@@ -83,6 +86,9 @@ cd competition/warm_up_comp
 清华大学计算机系图形学实验室从Flickr官网收集了1万张高清（宽1024、高768）的风景图片，并制作了它们的语义分割图。其中，1万对图片被用来训练。训练数据集可以从[这里](https://cloud.tsinghua.edu.cn/f/1d734cbb68b545d6bdf2/?dl=1)下载。
 
 ```
+git clone https://github.com/Jittor/gan-jittor.git
+cd gan-jittor/
+sudo python3.7 -m pip install -r requirements.txt
 cd competition/landscape_comp
 
 # 单卡训练，需要修改脚本里的数据路径
