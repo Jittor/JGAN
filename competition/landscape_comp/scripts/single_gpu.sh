@@ -1,0 +1,1 @@
+python pix2pix.py --output_path ./results/single_gpu --batch_size 32 --data_path path_to_your_data
