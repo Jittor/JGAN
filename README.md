@@ -7,17 +7,23 @@ This table is the latest citations we found from Google Scholar.
 It can be seen that since GAN was proposed in 2014, a lot of excellent work based on GAN has appeared.
 These 27 GANs have a total of 60953 citations, with an average of 2176 citations per article.
 
+我们的 GAN 模型库支持 27 种 GAN 模型。该表是我们从 Google Scholar 中找到的最新引用量。可以看到，自 2014 年提出 GAN 以来，出现了很多基于 GAN 的优秀工作。这 27 个 GAN 模型总共有 60953 次引用，平均每篇文章被引用 2176 次。
+
 <p align="center">
     <img src="assets/cite.png"\>
 </p>
 
 We compared the performance of these GANs of Jittor and Pytorch. The PyTorch version code uses the commit a163b8 on August 24, 2019 of the master branch of github repository: https://github.com/eriklindernoren/PyTorch-GAN. The picture below is the speedup ratio of Jittor relative to Pytorch. It can be seen that the highest acceleration ratio of these GANs reaches 283%, and the average acceleration ratio is 185%.
 
+我们比较了 Jittor 和 Pytorch 的这些 GAN 模型的性能。PyTorch 版本代码使用 github 仓库 master 分支 2019 年 8 月 24 日的 commit a163b8：https://github.com/eriklindernoren/PyTorch-GAN。下图是 Jittor 相对于 Pytorch 的加速比。可以看出，这些GANs的最高加速比达到283%，平均加速比为185%。
+
 <p align="center">
     <img src="assets/speedup.png"\>
 </p>
 
 In another form of presentation, assuming that Pytorch's training time is 100 hours, we calculated the time required for GAN training corresponding to Jittor. Of these GANs, our fastest accelerating GAN takes only 35 hours to run, with an average of 57 hours.
+
+以另一种形式的呈现，假设 Pytorch 的训练时间为 100 小时，我们计算了 Jittor 对应的 GAN 训练所需的时间。在这些 GAN 中，我们最快的加速 GAN 仅需 35 小时即可运行，平均为 57 小时。
 
 <p align="center">
     <img src="assets/100h.png"\>
