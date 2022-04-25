@@ -40,7 +40,7 @@ parser.add_argument("--channels", type=int, default=3, help="number of image cha
 parser.add_argument(
     "--sample_interval", type=int, default=500, help="interval between sampling of images from generators"
 )
-parser.add_argument("--checkpoint_interval", type=int, default=10, help="interval between model checkpoints")
+parser.add_argument("--checkpoint_interval", type=int, default=20, help="interval between model checkpoints")
 opt = parser.parse_args()
 print(opt)
 
