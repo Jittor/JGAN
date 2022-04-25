@@ -36,3 +36,7 @@ bash scripts/multi_gpu.sh
 ```
 
 注：代码中注释掉了eval的部分，等到测试数据发布之后，您可以取消注释进行评测。也可在训练阶段自动分配一部分数据集为测试集进行训练。
+
+下面展示了一些 baseline 训练完的结果。
+![1650852742(1)](https://user-images.githubusercontent.com/43036573/165009453-3301902a-8616-4b61-b861-262b81c78747.jpg)
+
