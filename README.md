@@ -67,6 +67,7 @@ In another form of presentation, assuming that Pytorch's training time is 100 ho
     + [Wasserstein GAN](#wasserstein-gan)
     + [Wasserstein GAN GP](#wasserstein-gan-gp)
     + [Wasserstein GAN DIV](#wasserstein-gan-div)
+    + [StyleGAN](https://github.com/xUhEngwAng/StyleGAN-jittor)
 
 ## Installation
     $ git clone https://github.com/Jittor/gan-jittor.git
