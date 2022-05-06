@@ -6,6 +6,7 @@ from jittor import nn
 
 def start_grad(model):
     for param in model.parameters():
+        if 'running_mean' in param.name() or 'running_var' in param.name(): continue
         param.start_grad()
 
 def stop_grad(model):
