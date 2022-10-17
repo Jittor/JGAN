@@ -1,3 +1,5 @@
 *.png
 *.pyc
 *.pkl
+checkpoints/
+__pycache__/
