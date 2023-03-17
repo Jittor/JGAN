@@ -3,4 +3,5 @@
 *.pkl
 checkpoints/
 __pycache__/
+results/
 *.html

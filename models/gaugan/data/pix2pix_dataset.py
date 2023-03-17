@@ -6,6 +6,7 @@ import ipdb
 from data.base_dataset import BaseDataset, get_params, get_transform
 from PIL import Image
 import util.util as util
+import jittor as jt
 import os
 
 
@@ -84,9 +85,12 @@ class Pix2pixDataset(BaseDataset):
                     (label_path, image_path)
             image = Image.open(image_path)
             image = image.convert('RGB')
+            # print(self.opt.preprocess_mode)
 
             transform_image = get_transform(self.opt, params)
             image_tensor = transform_image(image)
+            # print(image_tensor.shape)
+            # exit(0)
 
         # if using instance maps
         if self.opt.no_instance:

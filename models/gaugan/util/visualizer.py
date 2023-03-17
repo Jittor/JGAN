@@ -160,9 +160,12 @@ class Visualizer():
         ims = []
         txts = []
         links = []
-
         for label, image_numpy in visuals.items():
-            image_name = os.path.join(label, '%s.png' % (name))
+            if label == 'input_label':
+                image_name = os.path.join(label, '%s.png' % (name))
+            else:
+                image_name = os.path.join(label, '%s.jpg' % (name))
+
             save_path = os.path.join(image_dir, image_name)
 
             util.save_image(image_numpy, save_path, create_dir=True)
