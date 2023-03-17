@@ -188,8 +188,7 @@ class Pix2PixModel(nn.Module):
     def generate_fake(self, input_semantics, real_image, compute_kld_loss=False):
         z = None
         KLD_loss = None
-        # print(self.opt.isTrain)
-        # if self.opt.isTrain:
+        # if self.opt.use_vae and self.opt.isTrain:
         z, mu, logvar = self.encode_z(real_image)
         if compute_kld_loss:
             KLD_loss = self.KLDLoss(mu, logvar) * self.opt.lambda_kld
