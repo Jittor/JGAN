@@ -1,5 +1,4 @@
-CUDA_VISIBLE_DEVICES="0" python test.py  \
---input_path ../../../data/val_B-labels-clean \
---output_path ./result \
+CUDA_VISIBLE_DEVICES="2" python test.py  \
+--input_path ../../../data/val_B_labels_resized \
 --img_path ../../../data/train_resized/imgs \
---which_epoch 100
+--which_epoch 190

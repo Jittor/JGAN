@@ -36,7 +36,6 @@ webpage = html.HTML(web_dir,
 for i, data_i in enumerate(dataloader):
     if i * opt.batchSize >= opt.how_many:
         break
-
     generated = model(data_i, mode='inference')
     img_path = data_i['path']
     for b in range(generated.shape[0]):
