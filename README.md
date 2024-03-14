@@ -68,6 +68,7 @@ In another form of presentation, assuming that Pytorch's training time is 100 ho
     + [Wasserstein GAN GP](#wasserstein-gan-gp)
     + [Wasserstein GAN DIV](#wasserstein-gan-div)
     + [StyleGAN](https://github.com/xUhEngwAng/StyleGAN-jittor)
+    + [StyleGAN2](#StyleGAN2)
 
 ## Installation
     $ git clone https://github.com/Jittor/JGAN.git
@@ -610,4 +611,22 @@ $ python3.7 wgan_div.py
 
 <p align="center">
 <img src="assets/wgan_div.gif" width="240"\>
+</p>
+
+### StyleGAN2
+
+_Wasserstein Divergence for GANs_
+
+#### Authors
+Jiqing Wu, Zhiwu Huang, Janine Thoma, Dinesh Acharya, Luc Van Gool
+
+[[Paper]](https://arxiv.org/abs/1712.01026) [[Code]](models/wgan_div/wgan_div.py)
+
+#### Run Example
+```
+$ cd models/StyleGAN2
+```
+
+<p align="center">
+<img src="models/StyleGAN2/samples/sample.png" \>
 </p>
